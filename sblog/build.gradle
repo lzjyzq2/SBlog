@@ -1,0 +1,31 @@
+plugins {
+	id 'org.springframework.boot' version '2.1.7.RELEASE'
+	id 'java'
+}
+
+apply plugin: 'io.spring.dependency-management'
+
+group = 'cn.settile'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	compile("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.0")
+	compile("org.springframework.boot:spring-boot-starter-freemarker")
+	// https://mvnrepository.com/artifact/org.postgresql/postgresql
+	compile 'org.postgresql:postgresql:42.2.6'
+}
