@@ -30,3 +30,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Spring ###
+sblog/src/main/resources/application.properties
+sblog/gradle/wrapper/gradle-wrapper.properties
