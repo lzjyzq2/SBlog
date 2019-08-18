@@ -7,23 +7,26 @@
 - `PostgreSQL数据库`安装
     - 下载[`PostgreSQL`](https://www.postgresql.org/download/)
     - 注意：安装时选择`loacl`为`c`，以避免安装发生错误
+    - 注意：应自行创建数据库`SBlog`，SBlog项目运行时将自动创建表于`public`模式（架构）下
 - 项目配置
     - 先下载项目到本地
     - 使用`IDEA`打开项目
     - 创建`sblog\src\main\resources\application.properties`
     - 在`sblog\src\main\resources\application.properties`中写入如下配置
     ```
-        spring.datasource.url=jdbc:postgresql://[数据库IP]:[数据库端口号]/[数据库名称]
+        spring.datasource.platform=postgres
+        spring.datasource.url=jdbc:postgresql://[数据库IP]:[数据库端口号]/[数据库名称]?useSSL=false
         spring.datasource.username=[用户名]
         spring.datasource.password=[密码]
         spring.datasource.driver-class-name=org.postgresql.Driver
-
-        mybatis.configuration.map-underscore-to-camel-case=true
-        mybatis.configuration.default-fetch-size=100
-        mybatis.configuration.default-statement-timeout=30
-        mybatis.configuration.auto-mapping-unknown-column-behavior=WARNING
+        spring.datasource.driverClassName=org.postgresql.Driver
+        spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+        spring.jpa.properties.hibernate.hbm2ddl.auto=update
+        spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults = false
+        spring.jpa.database-platform=org.hibernate.dialect.PostgreSQL9Dialect
     ```
     - 在IDEA中将`File | Settings | Editor | Inspections`中的`Spring\Spring Core\Code\Autowiring for Bean Class`的严重性改为`warning`
+    - 在IDEA Settings中安装`lombok` Plugins
 - 运行与打包
     - 使用`Gradle\Tasks`中的`applicattion\bootRun`进行运行
     - 使用`Gradle\Tasks`中的`build\jar`进行打包
@@ -31,6 +34,6 @@
 ### 依赖
 - `SpringBoot`
 - `lombok` [文档](https://projectlombok.org/features/all)
-- `MyBatis` [文档](http://www.mybatis.org/spring-boot-starter/mybatis-spring-boot-autoconfigure/)
+- `SpringBoot JPA`
 - `FreeMarker` [参考手册](http://freemarker.foofun.cn/toc.html)
 - `PostgreSQL`
