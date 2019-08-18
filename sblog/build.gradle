@@ -24,7 +24,8 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	compile("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.0")
+	//compile("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.0")
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile("org.springframework.boot:spring-boot-starter-freemarker")
 	// https://mvnrepository.com/artifact/org.postgresql/postgresql
 	compile 'org.postgresql:postgresql:42.2.6'
