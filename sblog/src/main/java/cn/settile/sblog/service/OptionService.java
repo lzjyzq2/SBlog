@@ -1,8 +1,7 @@
 package cn.settile.sblog.service;
 
-import cn.settile.sblog.model.option.Option;
-import cn.settile.sblog.model.option.Propertys.Properties;
-import org.springframework.stereotype.Service;
+import cn.settile.sblog.model.db.option.Option;
+import cn.settile.sblog.model.db.option.Propertys.Properties;
 
 import java.util.List;
 
@@ -11,17 +10,17 @@ import java.util.List;
  * @date 2019/8/16
  */
 public interface OptionService {
-    /**
+    /** 将properties转换为List<Option>对象
      * @param properties 需要转换为List<Option>的Properties对象
      * @return List<Option>
      */
-    List<Option> getOptionListByProperties(Properties properties);
+    List<Option> getOptionsByProperties(Properties properties);
 
     /** 根据Properties类取出Properties
      * @param clazz 需要取出的Properties类
      * @return Properties 对象
      */
-    Properties getPropertiesByClass(Class clazz);
+    <T extends Properties> T getPropertiesByClass(Class<T> clazz);
 
     /** 存储Option
      * @param option 待存储的Option对象
@@ -37,4 +36,6 @@ public interface OptionService {
      * @param properties 待存储的properties对象
      */
     void save(Properties properties);
+
+    //TODO 设置项接口服务
 }

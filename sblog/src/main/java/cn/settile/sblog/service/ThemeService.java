@@ -18,4 +18,6 @@ public interface ThemeService {
     void activatedTheme(String themedir);
 
     void activatedTheme(int themeid);
+
+    //TODO 主题服务接口
 }

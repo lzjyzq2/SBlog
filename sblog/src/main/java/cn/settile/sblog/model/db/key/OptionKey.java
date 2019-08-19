@@ -1,10 +1,9 @@
-package cn.settile.sblog.model.key;
+package cn.settile.sblog.model.db.key;
 
 import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Id;
 import java.io.Serializable;
 
 /**

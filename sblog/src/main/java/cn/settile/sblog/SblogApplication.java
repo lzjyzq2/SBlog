@@ -1,8 +1,5 @@
 package cn.settile.sblog;
 
-import cn.settile.sblog.model.option.Option;
-import cn.settile.sblog.repository.OptionDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -10,8 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootApplication
 public class SblogApplication implements CommandLineRunner {
@@ -36,6 +31,6 @@ public class SblogApplication implements CommandLineRunner {
 	}
 	@Override
 	public void run(String... args) throws Exception {
-
+		//TODO 自定义配置设置
 	}
 }

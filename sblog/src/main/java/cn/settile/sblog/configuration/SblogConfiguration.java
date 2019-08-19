@@ -8,5 +8,5 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class SblogConfiguration {
-
+    //TODO SBlog的自定义配置实现
 }

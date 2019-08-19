@@ -1,9 +1,12 @@
 package cn.settile.sblog.repository;
 
-import cn.settile.sblog.model.key.OptionKey;
-import cn.settile.sblog.model.option.Option;
+import cn.settile.sblog.model.db.key.OptionKey;
+import cn.settile.sblog.model.db.option.Option;
+import cn.settile.sblog.model.db.option.Propertys.Properties;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @author : lzjyz
@@ -11,4 +14,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository(value = "OptionDao")
 public interface OptionDao extends JpaRepository<Option, OptionKey> {
+    <T extends Properties> List<Option> findOptionsByOptionKeyId(String id);
 }

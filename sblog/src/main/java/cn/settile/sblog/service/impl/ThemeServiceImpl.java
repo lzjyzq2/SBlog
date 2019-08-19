@@ -1,9 +1,8 @@
 package cn.settile.sblog.service.impl;
 
-import cn.settile.sblog.model.theme.Theme;
+import cn.settile.sblog.model.db.option.Propertys.ThemeProperties;
 import cn.settile.sblog.service.OptionService;
 import cn.settile.sblog.service.ThemeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /** ThemeService的实现，用以进行主题相关的操作
@@ -13,20 +12,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class ThemeServiceImpl implements ThemeService {
 
-    @Autowired
     OptionService optionService;
+    ThemeProperties themeProperties;
+
+    public ThemeServiceImpl(OptionService optionService) {
+        this.optionService = optionService;
+        this.themeProperties = optionService.getPropertiesByClass(ThemeProperties.class);
+    }
 
     @Override
     public String render(String pagename) {
         StringBuffer themeStr = new StringBuffer("themes/");
-//        themeStr.append(THEME_);
+        themeStr.append(getActivatedTheme());
         themeStr.append("/");
         return themeStr.append(pagename).toString();
     }
 
     @Override
     public String getActivatedTheme() {
-        return null;
+        return themeProperties.getActivatedTheme();
     }
 
     @Override

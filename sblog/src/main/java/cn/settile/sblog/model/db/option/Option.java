@@ -1,15 +1,10 @@
-package cn.settile.sblog.model.option;
+package cn.settile.sblog.model.db.option;
 
-import cn.settile.sblog.model.key.OptionKey;
-import cn.settile.sblog.model.option.Propertys.Properties;
+import cn.settile.sblog.model.db.key.OptionKey;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author lzjyzq2
