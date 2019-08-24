@@ -3,6 +3,7 @@ package cn.settile.sblog.model.db;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * @author : lzjyz
@@ -20,4 +21,6 @@ public class Article {
     Catalog catalog;
     String title;
     String content;
+    @Temporal(TemporalType.TIMESTAMP)
+    Date time;
 }

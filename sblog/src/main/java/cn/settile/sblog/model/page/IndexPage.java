@@ -1,7 +1,5 @@
 package cn.settile.sblog.model.page;
 
-import org.springframework.ui.Model;
-
 /**
  * @author : lzjyz
  * @date : 2019-08-19 20:04
