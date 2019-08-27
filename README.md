@@ -8,6 +8,9 @@
     - 下载[`PostgreSQL`](https://www.postgresql.org/download/)
     - 注意：安装时选择`loacl`为`c`，以避免安装发生错误
     - 注意：应自行创建数据库`SBlog`，SBlog项目运行时将自动创建表于`public`模式（架构）下
+- `Redis`Windows下安装
+    - 下载[`Redis`](https://github.com/MicrosoftArchive/redis/releases)
+    - 建议使用[`AnotherRedisDesktopManager`](https://github.com/qishibo/AnotherRedisDesktopManager/releases)进行可视化管理
 - 项目配置
     - 先下载项目到本地
     - 使用`IDEA`打开项目
@@ -24,6 +27,21 @@
         spring.jpa.properties.hibernate.hbm2ddl.auto=update
         spring.jpa.properties.hibernate.temp.use_jdbc_metadata_defaults = false
         spring.jpa.database-platform=org.hibernate.dialect.PostgreSQL9Dialect
+
+        # Redis服务器地址
+        spring.redis.host=127.0.0.1
+        # Redis服务器连接端口
+        spring.redis.port=25001
+        # Redis服务器连接密码（默认为空）
+        spring.redis.password=
+        # 连接池最大连接数（使用负值表示没有限制）
+        spring.redis.pool.max-active=100
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        spring.redis.pool.max-wait=-1
+        # 连接池中的最大空闲连接
+        spring.redis.pool.max-idle=10
+        # 连接池中的最小空闲连接
+        spring.redis.pool.min-idle=0
     ```
     - 在IDEA中将`File | Settings | Editor | Inspections`中的`Spring\Spring Core\Code\Autowiring for Bean Class`的严重性改为`warning`
     - 在IDEA Settings中安装`lombok` Plugins
@@ -35,5 +53,6 @@
 - `SpringBoot`
 - `lombok` [文档](https://projectlombok.org/features/all)
 - `SpringBoot JPA`
+- `Redis`
 - `FreeMarker` [参考手册](http://freemarker.foofun.cn/toc.html)
 - `PostgreSQL`
