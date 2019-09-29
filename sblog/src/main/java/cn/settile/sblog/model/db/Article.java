@@ -20,6 +20,7 @@ public class Article {
     @JoinColumn(nullable = false,name = "cid") @ManyToOne(cascade = {CascadeType.REFRESH})
     Catalog catalog;
     String title;
+    @Lob @Column(columnDefinition = "text")
     String content;
     @Temporal(TemporalType.TIMESTAMP)
     Date time;
