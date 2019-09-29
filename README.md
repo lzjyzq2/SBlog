@@ -45,6 +45,7 @@
     ```
     - 在IDEA中将`File | Settings | Editor | Inspections`中的`Spring\Spring Core\Code\Autowiring for Bean Class`的严重性改为`warning`
     - 在IDEA Settings中安装`lombok` Plugins
+        > 应注意使用`lombok`后的IDEA设置
 - 运行与打包
     - 使用`Gradle\Tasks`中的`applicattion\bootRun`进行运行
     - 使用`Gradle\Tasks`中的`build\jar`进行打包
@@ -52,7 +53,7 @@
 ### 依赖
 - `SpringBoot`
 - `lombok` [文档](https://projectlombok.org/features/all)
-- `SpringBoot JPA`
-- `Redis`
+- `Spring Data JPA` [文档](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/)
+- `Redis` [虚假的中文文档](http://www.redis.cn/documentation.html) [官方文档](https://redis.io/documentation) [菜鸟教程](https://www.runoob.com/redis/redis-install.html)
 - `FreeMarker` [参考手册](http://freemarker.foofun.cn/toc.html)
 - `PostgreSQL`
