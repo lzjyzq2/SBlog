@@ -1,4 +1,6 @@
-package cn.settile.sblog.model.db;
+package cn.settile.sblog.model.entity;
+
+import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +11,7 @@ import javax.persistence.Table;
  * @author : lzjyz
  * @date : 2019-08-19 20:51
  */
+@Data
 @Entity
 @Table(name = "Authority")
 public class Authority {

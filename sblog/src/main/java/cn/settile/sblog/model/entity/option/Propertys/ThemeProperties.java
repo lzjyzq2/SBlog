@@ -1,4 +1,4 @@
-package cn.settile.sblog.model.db.option.Propertys;
+package cn.settile.sblog.model.entity.option.Propertys;
 
 import lombok.Data;
 

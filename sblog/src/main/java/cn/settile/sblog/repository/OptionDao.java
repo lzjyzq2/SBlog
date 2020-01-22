@@ -1,8 +1,8 @@
 package cn.settile.sblog.repository;
 
-import cn.settile.sblog.model.db.key.OptionKey;
-import cn.settile.sblog.model.db.option.Option;
-import cn.settile.sblog.model.db.option.Propertys.Properties;
+import cn.settile.sblog.model.entity.key.OptionKey;
+import cn.settile.sblog.model.entity.option.Option;
+import cn.settile.sblog.model.entity.option.Propertys.Properties;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

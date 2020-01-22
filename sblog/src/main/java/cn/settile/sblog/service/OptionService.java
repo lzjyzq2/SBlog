@@ -1,7 +1,7 @@
 package cn.settile.sblog.service;
 
-import cn.settile.sblog.model.db.option.Option;
-import cn.settile.sblog.model.db.option.Propertys.Properties;
+import cn.settile.sblog.model.entity.option.Option;
+import cn.settile.sblog.model.entity.option.Propertys.Properties;
 
 import java.util.List;
 

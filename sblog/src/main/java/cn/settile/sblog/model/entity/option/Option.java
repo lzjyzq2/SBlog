@@ -1,6 +1,6 @@
-package cn.settile.sblog.model.db.option;
+package cn.settile.sblog.model.entity.option;
 
-import cn.settile.sblog.model.db.key.OptionKey;
+import cn.settile.sblog.model.entity.key.OptionKey;
 import lombok.Data;
 
 import javax.persistence.*;

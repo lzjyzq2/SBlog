@@ -1,6 +1,6 @@
 package cn.settile.sblog.service.impl;
 
-import cn.settile.sblog.model.db.option.Propertys.ThemeProperties;
+import cn.settile.sblog.model.entity.option.Propertys.ThemeProperties;
 import cn.settile.sblog.service.OptionService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;

@@ -1,6 +1,6 @@
 package cn.settile.sblog.service.impl;
 
-import cn.settile.sblog.model.db.option.Propertys.ThemeProperties;
+import cn.settile.sblog.model.entity.option.Propertys.ThemeProperties;
 import cn.settile.sblog.service.OptionService;
 import cn.settile.sblog.service.ThemeService;
 import org.springframework.stereotype.Service;

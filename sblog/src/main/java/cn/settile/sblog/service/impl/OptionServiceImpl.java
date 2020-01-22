@@ -1,7 +1,7 @@
 package cn.settile.sblog.service.impl;
 
-import cn.settile.sblog.model.db.option.Option;
-import cn.settile.sblog.model.db.option.Propertys.Properties;
+import cn.settile.sblog.model.entity.option.Option;
+import cn.settile.sblog.model.entity.option.Propertys.Properties;
 import cn.settile.sblog.repository.OptionDao;
 import cn.settile.sblog.service.OptionService;
 import org.springframework.beans.factory.annotation.Autowired;
