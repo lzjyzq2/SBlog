@@ -3,6 +3,7 @@ package cn.settile.sblog.model.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * @author : lzjyz
@@ -18,7 +19,7 @@ public class Permission {
     @Column(name = "permission",nullable = false)
     private String permissionsName;
 
-    @ManyToOne
+    @ManyToMany
     @JoinColumn
-    private Role role;
+    private Set<Role> roles;
 }

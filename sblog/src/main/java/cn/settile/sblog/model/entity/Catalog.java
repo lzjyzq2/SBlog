@@ -14,6 +14,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Catalog")
 public class Catalog {
+    //TODO:将此类移除，由 卷 存储目录
     @Id
     long id;
     String title;

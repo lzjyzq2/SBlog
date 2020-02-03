@@ -18,6 +18,8 @@ public class Role {
     private long id;
     @Column(name = "rolename",nullable = false,unique = true)
     private String roleName;
-    @OneToMany(mappedBy = "role")
+    @ManyToMany(mappedBy = "roles")
     private Set<Permission> permissions;
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users;
 }

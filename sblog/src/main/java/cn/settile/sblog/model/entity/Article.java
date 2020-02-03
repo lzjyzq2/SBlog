@@ -17,11 +17,23 @@ public class Article {
     long id;
     @JoinColumn(nullable = false,name = "uid") @ManyToOne(cascade = {CascadeType.REFRESH})
     User user;
+    /**
+     *
+     */
     @JoinColumn(nullable = false,name = "cid") @ManyToOne(cascade = {CascadeType.REFRESH})
     Catalog catalog;
+    /**
+     * 文章标题
+     */
     String title;
+    /**
+     * 文章内容
+     */
     @Lob @Column(columnDefinition = "text")
     String content;
+    /**
+     * 最后更新时间
+     */
     @Temporal(TemporalType.TIMESTAMP)
     Date time;
 }

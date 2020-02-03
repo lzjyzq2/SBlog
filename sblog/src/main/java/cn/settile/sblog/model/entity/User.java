@@ -1,9 +1,14 @@
 package cn.settile.sblog.model.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * @author : lzjyz
@@ -12,6 +17,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "user_info")
+@EntityListeners(AuditingEntityListener.class)
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long uid;       // 用户id
@@ -27,10 +33,10 @@ public class User {
     private String email;
     @Column(name = "phone")
     private String phone;
-    @Column(name = "created",nullable = false)
+    @Column(name = "created",updatable = false,nullable = false) @CreatedDate
     private Date created;   // 创建时间
-    @Column(name = "updated",nullable = false)
+    @Column(name = "updated",nullable = false) @LastModifiedDate
     private Date updated;   // 修改时间
-    @JoinColumn(nullable = false) @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.REFRESH)
-    private Role roles;    //用户所有角色值，用于shiro做角色权限的判断
+    @JoinColumn(nullable = false) @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.REFRESH)
+    private Set<Role> roles;    //用户所有角色值，用于shiro做角色权限的判断
 }
