@@ -23,13 +23,14 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
 //	compile 'org.springframework.boot:spring-boot-starter-security'
 //	compile 'org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.7.RELEASE'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	implementation 'org.apache.shiro:shiro-spring-boot-web-starter:1.4.2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	
+	implementation 'com.auth0:java-jwt:3.9.0'
 	//compile("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.0")
 
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
