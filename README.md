@@ -31,9 +31,9 @@
         # Redis服务器地址
         spring.redis.host=127.0.0.1
         # Redis服务器连接端口
-        spring.redis.port=25001
+        spring.redis.port=[端口]
         # Redis服务器连接密码（默认为空）
-        spring.redis.password=
+        spring.redis.password=[密码]
         # 连接池最大连接数（使用负值表示没有限制）
         spring.redis.pool.max-active=100
         # 连接池最大阻塞等待时间（使用负值表示没有限制）
@@ -42,10 +42,15 @@
         spring.redis.pool.max-idle=10
         # 连接池中的最小空闲连接
         spring.redis.pool.min-idle=0
+
+        # 国际化文件
+        spring.messages.basename=i18n/messages
+        # 国际化文件编码
+        spring.messages.encoding=UTF-8
     ```
-    - 在IDEA中将`File | Settings | Editor | Inspections`中的`Spring\Spring Core\Code\Autowiring for Bean Class`的严重性改为`warning`
+    - ~~在IDEA中将`File | Settings | Editor | Inspections`中的`Spring\Spring Core\Code\Autowiring for Bean Class`的严重性改为`warning`~~
     - 在IDEA Settings中安装`lombok` Plugins
-        > 应注意使用`lombok`后的IDEA设置
+        > 应注意安装`lombok`插件后的IDEA设置
 - 运行与打包
     - 使用`Gradle\Tasks`中的`applicattion\bootRun`进行运行
     - 使用`Gradle\Tasks`中的`build\jar`进行打包
