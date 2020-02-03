@@ -1,11 +1,23 @@
 package cn.settile.sblog.authorization;
 
+import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
+import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.realm.Realm;
+import org.apache.shiro.spring.LifecycleBeanPostProcessor;
+import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
+import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
 import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
+import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.mgt.SecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.servlet.Filter;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author : lzjyz
@@ -13,9 +25,9 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class ShiroConfig {
-    //注入自定义的realm，告诉shiro如何获取用户信息来做登录或权限控制
-    @Bean
-    public Realm realm() {
+
+    @Bean("realm")
+    public Realm getRealm(){
         return new CustomRealm();
     }
 
@@ -27,24 +39,63 @@ public class ShiroConfig {
          * 在@Controller注解的类的方法中加入@RequiresRole注解，会导致该方法无法映射请求，导致返回404。
          * 加入这项配置能解决这个bug
          */
+        creator.setProxyTargetClass(true);
         creator.setUsePrefix(true);
         return creator;
     }
 
-    /**
-     * 这里统一做鉴权，即判断哪些请求路径需要用户登录，哪些请求路径不需要用户登录。
-     * 这里只做鉴权，不做权限控制，因为权限用注解来做。
-     * @return
-     */
-    @Bean
-    public ShiroFilterChainDefinition shiroFilterChainDefinition() {
-        DefaultShiroFilterChainDefinition chain = new DefaultShiroFilterChainDefinition();
-        //TODO 此处对URL进行粗颗粒细度的权限控制
-        //哪些请求可以匿名访问
-        chain.addPathDefinition("/login", "anon");
 
-        //除了以上的请求外，其它请求都需要登录
-        chain.addPathDefinition("/**", "authc");
-        return chain;
+    @Bean("shiroFilterFactoryBean")
+    public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
+        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        shiroFilterFactoryBean.setSecurityManager(securityManager);
+        // 拦截器
+        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
+        // 配置不会被拦截的链接 顺序判断
+        filterChainDefinitionMap.put("/api/login", "anon"); //登录接口排除
+        filterChainDefinitionMap.put("/api/register", "anon");
+
+        // 添加自己的过滤器并且取名为jwt
+        Map<String, Filter> filterMap = new HashMap<String, Filter>(1);
+        filterMap.put("jwt", new JwtFilter());
+        shiroFilterFactoryBean.setFilters(filterMap);
+        // 过滤链定义，从上向下顺序执行，一般将放在最为下边
+        filterChainDefinitionMap.put("/**", "jwt");
+
+        //未授权界面返回JSON
+        //shiroFilterFactoryBean.setUnauthorizedUrl("/sys/common/403");
+        //shiroFilterFactoryBean.setLoginUrl("/sys/common/403");
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
+        return shiroFilterFactoryBean;
+    }
+
+    @Bean("securityManager")
+    public DefaultWebSecurityManager securityManager() {
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        securityManager.setRealm(getRealm());
+        /*
+         * 关闭shiro自带的session，详情见文档
+         * http://shiro.apache.org/session-management.html#SessionManagement-
+         * StatelessApplications%28Sessionless%29
+         */
+        DefaultSubjectDAO subjectDAO = new DefaultSubjectDAO();
+        DefaultSessionStorageEvaluator defaultSessionStorageEvaluator = new DefaultSessionStorageEvaluator();
+        defaultSessionStorageEvaluator.setSessionStorageEnabled(false);
+        subjectDAO.setSessionStorageEvaluator(defaultSessionStorageEvaluator);
+        securityManager.setSubjectDAO(subjectDAO);
+
+        return securityManager;
+    }
+
+    @Bean
+    public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+        return new LifecycleBeanPostProcessor();
+    }
+
+    @Bean
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(DefaultWebSecurityManager securityManager) {
+        AuthorizationAttributeSourceAdvisor advisor = new AuthorizationAttributeSourceAdvisor();
+        advisor.setSecurityManager(securityManager);
+        return advisor;
     }
 }
