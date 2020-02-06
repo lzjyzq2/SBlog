@@ -1,8 +1,6 @@
 package cn.settile.sblog.exception;
 
 import cn.settile.sblog.exception.result.Result;
-import cn.settile.sblog.exception.result.ResultCode;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author : lzjyz
@@ -13,7 +11,7 @@ public class ServiceException extends RuntimeException {
     Result result;
 
     public ServiceException(Result result){
-        super(result.getCode().getMessage());
+        super(result.getMessage());
         this.result = result;
     }
 

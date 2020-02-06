@@ -1,7 +1,6 @@
 package cn.settile.sblog.controller.api;
 
 import cn.settile.sblog.exception.result.Result;
-import cn.settile.sblog.exception.result.ResultCode;
 import cn.settile.sblog.model.dto.LoginInfo;
 import cn.settile.sblog.model.entity.User;
 import cn.settile.sblog.service.UserService;
@@ -27,12 +26,12 @@ public class LoginController {
 
     @PostMapping
     public Result login(@RequestParam String username,@RequestParam String password) {
-        Result result = new Result(ResultCode.LOGIN_FAIL);
+        Result result = Result.LOGIN_FAIL;
         if (CommonUtil.isNotEmpty(username) && CommonUtil.isNotEmpty(password)
                 && RegisterController.checkPassword(password) && RegisterController.checkUserName(username)) {
             User loginUser = userService.getUserByUname(username);
             if(loginUser!=null&&checkPasswordIsCurrent(loginUser,password)){
-                result.setCode(ResultCode.LOGIN_SUCCESS);
+                result = Result.LOGIN_SUCCESS;
                 result.setData(getUserLoginInfo(loginUser));
             }
         }

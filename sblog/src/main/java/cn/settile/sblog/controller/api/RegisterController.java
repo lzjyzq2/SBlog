@@ -2,7 +2,6 @@ package cn.settile.sblog.controller.api;
 
 import cn.settile.sblog.exception.ServiceException;
 import cn.settile.sblog.exception.result.Result;
-import cn.settile.sblog.exception.result.ResultCode;
 import cn.settile.sblog.model.entity.Role;
 import cn.settile.sblog.model.entity.User;
 import cn.settile.sblog.service.RoleService;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -107,14 +105,15 @@ public class RegisterController {
                 }
                 roleSet.add(roleService.getRoleByRoleName(RoleService.DefaultRoleName));
                 user.setRoles(roleSet);
+                log.error(user.toString());
                 userService.registerUser(user);
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new ServiceException(new Result(ResultCode.REGISTER_ERR));
+                throw new ServiceException(Result.REGISTER_ERR);
             }
-            return new Result(ResultCode.REGISTER_SUCCESS);
+            return Result.REGISTER_SUCCESS;
         } else {
-            return new Result(ResultCode.REGISTER_FAIL);
+            return Result.REGISTER_FAIL;
         }
     }
 

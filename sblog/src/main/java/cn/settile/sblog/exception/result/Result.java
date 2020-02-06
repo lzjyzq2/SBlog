@@ -1,42 +1,112 @@
 package cn.settile.sblog.exception.result;
 
 import cn.settile.sblog.utils.MessagesUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /**
  * @author : lzjyz
  * @date : 2020-02-01 16:14
  */
-@Data
-public class Result{
+@JsonFormat(shape= JsonFormat.Shape.OBJECT)
+public enum Result{
 
-    ResultCode code;
-    Object data;
+    /**
+     *
+     */
+    SUCCESS(0, "normal.success"),
+    /**
+     *
+     */
+    FAIL(1,"normal.fail"),
+    /**
+     *
+     */
+    ERR(2,"normal.err"),
 
-    public Result(ResultCode resultCode,Object data){
-        this.code = resultCode;
+    /**
+     *
+     */
+    REGISTER_SUCCESS(10, "register.success"),
+    /**
+     *
+     */
+    REGISTER_FAIL(11,"register.fail"),
+
+    /**
+     *
+     */
+    REGISTER_ERR(12,"register.err"),
+
+    /**
+     *
+     */
+    LOGIN_SUCCESS(20, "login.success"),
+    /**
+     *
+     */
+    LOGIN_FAIL(21,"login.fail"),
+
+    LOGIN_ERR(22,"login.err"),
+
+    /**
+     *
+     */
+    AUTHENTICATION_SUCCESS(30,"authentication.success"),
+
+    /**
+     *
+     */
+    AUTHENTICATION_FAIL(31,"authentication.fail"),
+
+    /**
+     *
+     */
+    AUTHENTICATION_ERR(32,"authentication.err");
+
+
+    private int code;
+    private String message;
+    private Object data = null;
+
+
+    private Result(int code,String message){
+        this.code = code;
+        this.message = MessagesUtil.get(message);
+    }
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
         this.data = data;
     }
-    public Result(ResultCode resultCode){
-        this.code = resultCode;
-    }
-    public Result(ResultCode resultCode,String message,boolean key){
-        this.code = resultCode;
-        setMessage(message,key);
-    }
-    public Result(ResultCode resultCode,String message,Object data,boolean key){
-        this.code = resultCode;
-        setMessage(message,key);
-        this.data = data;
+
+    public static Result Builder(Result result, Object data){
+        result.setData(data);
+        return result;
     }
 
-    public void setMessage(String message,boolean key){
-        if(code!=null){
-            if(key){
-                this.code.setMessage(MessagesUtil.get(message));
-            }else {
-                this.code.setMessage(message);
-            }
-        }
+    public static Result Builder(Result result,String message,Object data){
+        result.setMessage(message);
+        result.setData(data);
+        return result;
     }
 }

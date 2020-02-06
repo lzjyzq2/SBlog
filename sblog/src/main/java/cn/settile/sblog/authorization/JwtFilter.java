@@ -2,7 +2,6 @@ package cn.settile.sblog.authorization;
 
 import cn.settile.sblog.exception.UnAuthenticationException;
 import cn.settile.sblog.exception.result.Result;
-import cn.settile.sblog.exception.result.ResultCode;
 import cn.settile.sblog.utils.CommonConstant;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
 import org.springframework.http.HttpStatus;
@@ -31,7 +30,7 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
         try {
             return executeLogin(request, response);
         } catch (Exception e) {
-            throw new UnAuthenticationException(new Result(ResultCode.AUTHENTICATION_FAIL));
+            throw new UnAuthenticationException(Result.AUTHENTICATION_FAIL);
         }
     }
 

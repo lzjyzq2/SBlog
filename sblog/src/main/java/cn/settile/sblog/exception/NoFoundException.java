@@ -1,7 +1,6 @@
 package cn.settile.sblog.exception;
 
 import cn.settile.sblog.exception.result.Result;
-import cn.settile.sblog.exception.result.ResultCode;
 
 /**
  * @author : lzjyz
