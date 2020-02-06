@@ -1,6 +1,9 @@
 package cn.settile.sblog.model.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -14,7 +17,9 @@ import java.util.Set;
  * @author : lzjyz
  * @date : 2019-08-19 20:35
  */
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = {"roles"})
 @Entity
 @Table(name = "user_info")
 @EntityListeners(AuditingEntityListener.class)
@@ -37,6 +42,21 @@ public class User {
     private Date created;   // 创建时间
     @Column(name = "updated",nullable = false) @LastModifiedDate
     private Date updated;   // 修改时间
-    @JoinColumn(nullable = false) @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.REFRESH)
+    @JoinColumn(nullable = false) @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.REFRESH)
     private Set<Role> roles;    //用户所有角色值，用于shiro做角色权限的判断
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "uid=" + uid +
+                ", uname='" + uname + '\'' +
+                ", nick='" + nick + '\'' +
+                ", password='" + password + '\'' +
+                ", salt='" + salt + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", created=" + created +
+                ", updated=" + updated +
+                '}';
+    }
 }

@@ -1,6 +1,9 @@
 package cn.settile.sblog.model.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -9,17 +12,25 @@ import java.util.Set;
  * @author : lzjyz
  * @date : 2020-01-22 14:53
  */
-@Data
 @Entity
 @Table(name = "role")
+@Getter @Setter @EqualsAndHashCode(exclude = {"permissions","users"})
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "rolename",nullable = false,unique = true)
     private String roleName;
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles",fetch =FetchType.LAZY)
     private Set<Permission> permissions;
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles",fetch = FetchType.LAZY)
     private Set<User> users;
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", roleName='" + roleName + '\'' +
+                '}';
+    }
 }
