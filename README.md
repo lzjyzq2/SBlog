@@ -54,6 +54,39 @@
 - 运行与打包
     - 使用`Gradle\Tasks`中的`applicattion\bootRun`进行运行
     - 使用`Gradle\Tasks`中的`build\jar`进行打包
+- 建议使用的Commit规范
+    ```
+    <type>(<scope>): <subject>
+    <BLANK LINE>
+    <body>
+    <BLANK LINE>
+    <footer>
+    ```
+    Type的分类：
+    ```
+    feat：新功能（feature）
+    fix：修补bug
+    docs：文档（documentation）
+    style： 格式（不影响代码运行的变动）
+    refactor：重构（即不是新增功能，也不是修改bug的代码变动）
+    test：增加测试
+    chore：构建过程或辅助工具的变动
+    ```
+    Scope的推荐类型：
+    ```
+    controller
+    service
+    entity
+    dao
+    bean
+    util
+    ……
+    ```
+    Subject：
+    ```
+    subject是 commit 目的的简短描述
+    ```
+    - 详细参考：[点击查看](http://www.ruanyifeng.com/blog/2016/01/commit_message_change_log.html)
 
 ### 依赖
 - `SpringBoot`
