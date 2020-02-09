@@ -55,6 +55,15 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/api/login", "anon"); //登录接口排除
         filterChainDefinitionMap.put("/api/register", "anon");
 
+        filterChainDefinitionMap.put("/swagger-ui.html","anon");
+        filterChainDefinitionMap.put("/favicon.ico","anon");
+        filterChainDefinitionMap.put("/swagger/**","anon");
+        filterChainDefinitionMap.put("/webjars/**","anon");
+        filterChainDefinitionMap.put("/swagger-resources/**","anon");
+        filterChainDefinitionMap.put("/v2/**","anon");
+
+        filterChainDefinitionMap.put("/error","anon");
+
         // 添加自己的过滤器并且取名为jwt
         Map<String, Filter> filterMap = new HashMap<String, Filter>(1);
         filterMap.put("jwt", new JwtFilter());

@@ -8,11 +8,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.context.request.RequestContextListener;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.io.PrintStream;
 
 @SpringBootApplication
 @EnableJpaAuditing
+@EnableSwagger2
 public class SblogApplication implements CommandLineRunner {
 
 	public static void main(String[] args) {
