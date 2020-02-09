@@ -51,6 +51,12 @@
     - ~~在IDEA中将`File | Settings | Editor | Inspections`中的`Spring\Spring Core\Code\Autowiring for Bean Class`的严重性改为`warning`~~
     - 在IDEA Settings中安装`lombok` Plugins
         > 应注意安装`lombok`插件后的IDEA设置
+
+- ### 注意事项
+    #### Swagger2：
+    - 在`Controller`下应增加`@RequestMapping`注解
+    - 在使用`Model`作为接口值时应使用`@RequestBody`注解
+
 - 运行与打包
     - 使用`Gradle\Tasks`中的`applicattion\bootRun`进行运行
     - 使用`Gradle\Tasks`中的`build\jar`进行打包
