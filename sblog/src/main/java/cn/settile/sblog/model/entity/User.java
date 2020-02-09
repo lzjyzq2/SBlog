@@ -1,5 +1,7 @@
 package cn.settile.sblog.model.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,19 +25,28 @@ import java.util.Set;
 @Entity
 @Table(name = "user_info")
 @EntityListeners(AuditingEntityListener.class)
+@ApiModel
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long uid;       // 用户id
+    @ApiModelProperty(name = "用户名")
     @Column(name = "uname",nullable = false,unique = true)
     private String uname;   // 登录名，不可改
+
+    @ApiModelProperty(name = "昵称")
     @Column(name = "nick",nullable = false,unique = true)
     private String nick;    // 用户昵称，可改
+
+    @ApiModelProperty(name = "密码")
     @Column(nullable = false)
     String password;  //应加密存储
+
     @Column(name = "salt",nullable = false)
     private String salt;    // 加密盐值
+    @ApiModelProperty(name = "邮箱")
     @Column(name = "email",nullable = false)
     private String email;
+    @ApiModelProperty(name = "手机号")
     @Column(name = "phone")
     private String phone;
     @Column(name = "created",updatable = false,nullable = false) @CreatedDate

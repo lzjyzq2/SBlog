@@ -10,5 +10,5 @@ import lombok.EqualsAndHashCode;
 @Data @EqualsAndHashCode(callSuper = true)
 public class ThemeProperties  extends Properties{
     String id;
-    String activatedTheme;
+    String activatedTheme = "SBlog";
 }
