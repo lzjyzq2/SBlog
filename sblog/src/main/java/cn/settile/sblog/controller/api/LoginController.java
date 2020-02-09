@@ -5,6 +5,10 @@ import cn.settile.sblog.model.dto.LoginInfo;
 import cn.settile.sblog.model.entity.User;
 import cn.settile.sblog.service.UserService;
 import cn.settile.sblog.utils.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +18,9 @@ import org.springframework.web.bind.annotation.*;
  * @date : 2020-01-27 11:36
  */
 @Slf4j
-@RestController("/api/login")
+@Api(tags = "用户登录接口")
+@RestController
+@RequestMapping("/api/login")
 public class LoginController {
 
     @Autowired
@@ -24,6 +30,11 @@ public class LoginController {
     RedisUtil redisUtil;
 
 
+    @ApiOperation(value = "登录接口", notes = "用户输入用户名和密码进行登录，返回用户部分信息与Token", httpMethod = "POST", response = String.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "username", value = "用户名", dataType = "String"),
+            @ApiImplicitParam(name = "password", value = "密码", dataType = "String")
+    })
     @PostMapping
     public Result login(@RequestParam String username,@RequestParam String password) {
         Result result = Result.LOGIN_FAIL;

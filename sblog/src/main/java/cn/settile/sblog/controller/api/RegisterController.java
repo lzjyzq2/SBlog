@@ -8,9 +8,12 @@ import cn.settile.sblog.service.RoleService;
 import cn.settile.sblog.service.UserService;
 import cn.settile.sblog.utils.CommonUtil;
 import cn.settile.sblog.utils.PasswordUtil;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashSet;
@@ -21,7 +24,9 @@ import java.util.Set;
  * @date : 2020-01-26 17:21
  */
 @Slf4j
-@RestController("/api/register")
+@RestController
+@RequestMapping("/api/register")
+@Api(tags = "用户注册接口")
 public class RegisterController {
 
     @Autowired
@@ -87,8 +92,9 @@ public class RegisterController {
      * @param user 待注册User
      * @return 注册结果
      */
+    @ApiOperation(value = "注册接口", notes = "用户输入用户信息进行注册，返回注册结果", httpMethod = "PUT", response = String.class)
     @PutMapping
-    public Result register(User user) throws ServiceException{
+    public Result register(@RequestBody User user) throws ServiceException{
         boolean checkout = checkUserInfoIsCurrent(user);
         boolean canReg = userService.canRegisterUser(user);
         if (checkout && canReg) {
