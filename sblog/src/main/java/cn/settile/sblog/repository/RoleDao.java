@@ -14,15 +14,20 @@ import java.util.Set;
 @Repository
 public interface RoleDao extends JpaRepository<Role,Long> {
 
-    /**
-     * @param rolename
-     * @return
+    /** 根据角色名获取一个角色
+     * @param role 角色名称
+     * @return 对应的角色对象
      */
-    Role getRoleByRoleName(String rolename);
+    Role getRoleByRoleName(String role);
 
-    /**
-     * @param rolename
-     * @return
+    /** 根据角色名删除一个角色
+     * @param role 角色名称
      */
-    boolean existsRoleByRoleName(String rolename);
+    void deleteRoleByRoleName(String role);
+
+    /** 检查是否存在该名称的角色
+     * @param role 角色名称
+     * @return false：不存在，true：存在
+     */
+    boolean existsRoleByRoleName(String role);
 }
