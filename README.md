@@ -16,7 +16,7 @@
     - 使用`IDEA`打开项目
     - 创建`sblog\src\main\resources\application.properties`
     - 在`sblog\src\main\resources\application.properties`中写入如下配置
-    ```
+        ```
         spring.datasource.platform=postgres
         spring.datasource.url=jdbc:postgresql://[数据库IP]:[数据库端口号]/[数据库名称]?useSSL=false
         spring.datasource.username=[用户名]
@@ -47,7 +47,12 @@
         spring.messages.basename=i18n/messages
         # 国际化文件编码
         spring.messages.encoding=UTF-8
-    ```
+
+        # 数据表permission的初始化内容
+        sblog.data.permission = write+,write,commit,view,delete,admin,admin+
+        # 数据表role的初始化内容
+        sblog.data.role = {"user":["write+","commit","view","admin"],"admin":["write+","commit","view","delete","admin","admin+"]}
+        ```
     - ~~在IDEA中将`File | Settings | Editor | Inspections`中的`Spring\Spring Core\Code\Autowiring for Bean Class`的严重性改为`warning`~~
     - 在IDEA Settings中安装`lombok` Plugins
         > 应注意安装`lombok`插件后的IDEA设置
@@ -56,7 +61,23 @@
     #### Swagger2：
     - 在`Controller`下应增加`@RequestMapping`注解
     - 在使用`Model`作为接口值时应使用`@RequestBody`注解
-
+    #### 初始化内容：
+    - 不建议修改`sblog.data.permission`内容会使得系统无法正常工作
+    - `sblog.data.role`内容为JSON字符串，其格式与含义如下：
+        ```
+        {
+            <roleName>:[permission1,permission2]
+        }
+        ```
+    #### 多环境配置文件使用：
+    - IDEA：在`Environment variables`中输入：
+        ```
+        spring.profiles.active=dev
+        ```
+    - JAR：启动时使用：
+        ```
+        `java -jar xxx.jar --spring.profiles.actvie=dev `
+        ```
 - 运行与打包
     - 使用`Gradle\Tasks`中的`applicattion\bootRun`进行运行
     - 使用`Gradle\Tasks`中的`build\jar`进行打包
