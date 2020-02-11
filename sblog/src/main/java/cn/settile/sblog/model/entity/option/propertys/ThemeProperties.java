@@ -1,4 +1,4 @@
-package cn.settile.sblog.model.entity.option.Propertys;
+package cn.settile.sblog.model.entity.option.propertys;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

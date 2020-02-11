@@ -109,7 +109,7 @@ public class RegisterController {
                 }else {
                     roleSet.clear();
                 }
-                roleSet.add(roleService.getRoleByRoleName(RoleService.DefaultRoleName));
+                roleSet.add(roleService.getRoleByRoleName(RoleService.DEFAULT_ROLE_NAME));
                 user.setRoles(roleSet);
                 log.error(user.toString());
                 userService.registerUser(user);

@@ -24,8 +24,7 @@ public class Permission {
     @Column(name = "permission",nullable = false)
     private String permissionsName;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn
+    @ManyToMany(mappedBy = "permissions",fetch = FetchType.LAZY)
     private Set<Role> roles;
 
     @Override
