@@ -1,6 +1,5 @@
 package cn.settile.sblog.model.entity;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +23,12 @@ public class Tag {
     @Column(unique = true, nullable = false)
     private String name;
 
+    /**
+     * 描述
+     */
+    @Column(nullable = false)
+    private String info;
+
     @ManyToMany(fetch = FetchType.LAZY)
     Set<Article> articles;
 
@@ -32,6 +37,7 @@ public class Tag {
         return "Tag{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", info='" + info + '\'' +
                 '}';
     }
 }

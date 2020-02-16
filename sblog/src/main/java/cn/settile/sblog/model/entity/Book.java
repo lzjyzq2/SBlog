@@ -1,6 +1,5 @@
 package cn.settile.sblog.model.entity;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,15 +14,26 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(exclude = {"subsections"})
-@Entity @Table(name = "book")
+@Entity
+@Table(name = "book")
 public class Book {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "book_name",nullable = false)
     private String name;
 
+    /**
+     * 描述信息
+     */
+    @Column(nullable = false)
+    private String info;
+
     @OneToMany(mappedBy = "book",fetch = FetchType.LAZY)
     private Set<Subsection> subsections;
+
+    @ManyToOne
+    User user;
 
     @Override
     public String toString() {

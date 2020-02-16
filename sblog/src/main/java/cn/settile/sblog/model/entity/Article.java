@@ -1,6 +1,5 @@
 package cn.settile.sblog.model.entity;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,57 +18,83 @@ import java.util.Set;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"subsection","tags"})
+@EqualsAndHashCode(exclude = {"subsection","tags","comments","uploadImages","uploadFiles"})
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "Article")
 public class Article {
     @Id
-    long id;
+    private long id;
     @JoinColumn(nullable = false,name = "uid") @ManyToOne(cascade = {CascadeType.REFRESH})
-    User user;
+    private User user;
     /**
      *
      */
     @JoinColumn(nullable = false,name = "sid") @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.REFRESH})
-    Subsection subsection;
+    private Subsection subsection;
     /**
      * 文章标题
      */
-    String title;
+    private String title;
     /**
      * 文章内容
      */
-    @Lob @Column(columnDefinition = "text")
-    String content;
+    @Lob
+    @Column(columnDefinition = "text")
+    private String content;
     /**
      * 创建和最后更新时间
      */
-    @Column(nullable = false) @CreatedDate @LastModifiedDate
-    Date time;
+    @Column(nullable = false) @CreatedDate
+    @LastModifiedDate
+    private Date time;
 
     /**
      * 能否评论：false-不能，true-能
      */
     @ColumnDefault(value = "true")
-    boolean canComment;
+    private boolean canComment;
 
     /**
-     * 浏览量
+     * 能否查看
      */
-    long views;
+    @ColumnDefault(value = "true")
+    private boolean canView;
 
     /**
      * 能否复制：false-不能，true-能
      */
     @ColumnDefault(value = "false")
-    boolean canCopy;
+    private boolean canCopy;
 
+    /**
+     * 浏览量
+     */
+    private long views;
+
+    /**
+     * 日前阅读量
+     */
+    private long dayView;
+
+    /**
+     * 赞同数
+     */
+    private long approve;
     /**
      * 文章所具有的标签
      */
     @ManyToMany(mappedBy = "articles")
-    Set<Tag> tags;
+    private Set<Tag> tags;
+
+    @OneToMany(mappedBy = "article")
+    private Set<Comment> comments;
+
+    @ManyToMany(mappedBy = "articles")
+    private Set<UploadImage> uploadImages;
+
+    @ManyToMany(mappedBy = "articles")
+    private Set<UploadFile> uploadFiles;
 
     @Override
     public String toString() {
@@ -80,8 +105,11 @@ public class Article {
                 ", content='" + content + '\'' +
                 ", time=" + time +
                 ", canComment=" + canComment +
-                ", views=" + views +
+                ", canView=" + canView +
                 ", canCopy=" + canCopy +
+                ", views=" + views +
+                ", dayView=" + dayView +
+                ", approve=" + approve +
                 '}';
     }
 }

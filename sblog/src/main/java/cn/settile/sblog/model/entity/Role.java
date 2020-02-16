@@ -1,6 +1,5 @@
 package cn.settile.sblog.model.entity;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,14 +13,16 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "role")
-@Getter @Setter @EqualsAndHashCode(exclude = {"permissions","users"})
+@Getter
+@Setter
+@EqualsAndHashCode(exclude = {"permissions","users"})
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "rolename",nullable = false,unique = true)
     private String roleName;
-    @ManyToMany(fetch =FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Permission> permissions;
     @ManyToMany(mappedBy = "roles",fetch = FetchType.LAZY)
     private Set<User> users;

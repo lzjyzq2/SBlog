@@ -1,6 +1,5 @@
 package cn.settile.sblog.model.entity;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
