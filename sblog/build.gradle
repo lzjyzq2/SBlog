@@ -50,7 +50,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-data-redis")
 
     compile("org.springframework.boot:spring-boot-starter-freemarker")
-
+    compile("org.springframework.boot:spring-boot-devtools")
     // https://mvnrepository.com/artifact/org.postgresql/postgresql
     compile 'org.postgresql:postgresql:42.2.6'
 }
