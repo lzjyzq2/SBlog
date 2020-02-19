@@ -1,10 +1,13 @@
 package cn.settile.sblog;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.Banner;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
@@ -19,8 +22,10 @@ import java.io.PrintStream;
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableSwagger2
-public class SblogApplication implements CommandLineRunner {
+@Slf4j
+public class SblogApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
+	String test;
 	public static void main(String[] args) {
 		System.setProperty("spring.config.additional-location", "file:./sblog/,file:./sblog-dev/");
 		SpringApplication springApplication = new SpringApplication(SblogApplication.class);
@@ -31,6 +36,11 @@ public class SblogApplication implements CommandLineRunner {
 		//TODO 自定义配置设置
 	}
 
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		System.setProperty("spring.config.additional-location", "file:./sblog/,file:./sblog-dev/");
+		return application.sources(SblogApplication.class);
+	}
 	/**
 	 * RequestContextListener监听器
 	 * @return
