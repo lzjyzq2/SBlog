@@ -33,3 +33,5 @@ out/
 
 ### Project ###
 /src/main/resources/application.properties
+/sblog/
+/sblog-dev/
