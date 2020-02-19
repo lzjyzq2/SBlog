@@ -18,7 +18,7 @@ import java.util.Set;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"subsection","tags","comments","uploadImages","uploadFiles"})
+@EqualsAndHashCode(exclude = {"subsection","tags","comments","uploadImages","uploadFiles","articleApproves"})
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "Article")
@@ -95,6 +95,9 @@ public class Article {
 
     @ManyToMany(mappedBy = "articles")
     private Set<UploadFile> uploadFiles;
+
+    @OneToMany(mappedBy = "article")
+    private Set<ArticleApprove> articleApproves;
 
     @Override
     public String toString() {

@@ -18,7 +18,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(exclude = {"roles", "books", "histories",
-        "articleCollections","bookCollections","follows","links"})
+        "articleCollections","bookCollections","follows","links","articleApproves","commentApproves"})
 @Entity
 @Table(name = "user_info")
 @EntityListeners(AuditingEntityListener.class)
@@ -74,6 +74,10 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private Set<Link> links;
 
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
+    private Set<ArticleApprove> articleApproves;
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
+    private Set<CommentApprove> commentApproves;
     @Override
     public String toString() {
         return "User{" +

@@ -16,7 +16,7 @@ import java.util.Set;
 @Entity
 @Table
 @EntityListeners(AuditingEntityListener.class)
-@EqualsAndHashCode(exclude = {"comments","article"})
+@EqualsAndHashCode(exclude = {"comments","article","commentApproves"})
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +40,8 @@ public class Comment {
     @ManyToOne
     private Article article;
 
+    @OneToMany(mappedBy = "comment")
+    private Set<CommentApprove> commentApproves;
     @Override
     public String toString() {
         return "Comment{" +
