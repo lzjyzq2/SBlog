@@ -1,6 +1,7 @@
 package cn.settile.sblog.controller.api;
 
 import cn.settile.sblog.exception.result.Result;
+import cn.settile.sblog.filter.aspect.AccessLimit;
 import cn.settile.sblog.model.dto.LoginInfo;
 import cn.settile.sblog.model.entity.User;
 import cn.settile.sblog.service.UserService;
@@ -12,6 +13,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author : lzjyz
@@ -36,6 +39,7 @@ public class LoginController {
             @ApiImplicitParam(name = "password", value = "密码", dataType = "String")
     })
     @PostMapping
+    @AccessLimit(time = 5,count = 2,timeUnit = TimeUnit.SECONDS)
     public Result login(@RequestParam String username,@RequestParam String password) {
         Result result = Result.LOGIN_FAIL;
         if (CommonUtil.isNotEmpty(username) && CommonUtil.isNotEmpty(password)

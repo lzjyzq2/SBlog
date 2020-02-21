@@ -25,6 +25,11 @@ public enum Result{
     ERR(2,"normal.err"),
 
     /**
+     * 短时间内请求过多，访问拒绝
+     */
+    REFUSE(3,"normal.refuse"),
+
+    /**
      *
      */
     REGISTER_SUCCESS(10, "register.success"),

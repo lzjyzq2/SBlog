@@ -29,6 +29,9 @@ import java.util.Set;
 @Api(tags = "用户注册接口")
 public class RegisterController {
 
+    public static final String REG_CODE_CACHENAME = "REG_CODE_CACHE";
+    public static final String REG_CODE_CACHE = "REG_CODE_CACHE::";
+
     @Autowired
     UserService userService;
     @Autowired

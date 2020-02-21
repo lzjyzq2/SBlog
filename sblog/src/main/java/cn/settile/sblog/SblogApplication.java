@@ -25,7 +25,6 @@ import java.io.PrintStream;
 @Slf4j
 public class SblogApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
-	String test;
 	public static void main(String[] args) {
 		System.setProperty("spring.config.additional-location", "file:./sblog/,file:./sblog-dev/");
 		SpringApplication springApplication = new SpringApplication(SblogApplication.class);
