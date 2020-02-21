@@ -14,8 +14,8 @@
 - 项目配置
     - 先下载项目到本地
     - 使用`IDEA`打开项目
-    - 创建`sblog\src\main\resources\application.properties`
-    - 在`sblog\src\main\resources\application.properties`中写入如下配置
+    - 在项目中创建`sblog`或`sblog-dev`文件夹
+    - 将`sblog\src\main\resources\application.properties`拷贝到文件夹中修改配置
         ```
         spring.datasource.platform=postgres
         spring.datasource.url=jdbc:postgresql://[数据库IP]:[数据库端口号]/[数据库名称]?useSSL=false
@@ -48,6 +48,21 @@
         # 国际化文件编码
         spring.messages.encoding=UTF-8
 
+        # JavaMailSender 邮件发送的配置
+        spring.mail.default-encoding=UTF-8
+        spring.mail.host=[邮件服务地址]
+        spring.mail.port=[邮件服务端口号]
+        spring.mail.username=[邮箱账户]
+
+        # 邮箱开启的授权码
+        spring.mail.password=[授权码]
+        spring.mail.properties.smtp.auth=true
+        spring.mail.properties.smtp.starttls.enable=true
+        spring.mail.properties.smtp.starttls.required=true
+        spring.mail.properties.mail.smtp.ssl.enable=true
+
+
+        # 以下内容不建议修改
         # 数据表permission的初始化内容
         sblog.data.permission = write+,write,commit,view,delete,admin,admin+
         # 数据表role的初始化内容
@@ -56,7 +71,14 @@
     - ~~在IDEA中将`File | Settings | Editor | Inspections`中的`Spring\Spring Core\Code\Autowiring for Bean Class`的严重性改为`warning`~~
     - 在IDEA Settings中安装`lombok` Plugins
         > 应注意安装`lombok`插件后的IDEA设置
-
+- ### 接口文档
+    - 规划中的接口文档，可按如下方式查看：
+        ```
+        [rootDir]/sblog/RESTful.md
+        ```
+    - 已实现的接口文档，可按如下方式查看：
+        1. 启动项目
+        2. 访问 `localhost:[port]/swagger-ui.html`
 - ### 注意事项
     #### Swagger2：
     - 在`Controller`下应增加`@RequestMapping`注解
@@ -69,6 +91,15 @@
             <roleName>:[permission1,permission2]
         }
         ```
+    #### 配置文件优先级列表(由上到下，优先级越低，上层覆盖下层)
+    - `S'Blog` 配置文件优先级：
+        - file:./sblog-dev/
+        - file:./sblog/
+    - `SpringBoot` 配置文件优先级:
+        - file:./config/
+        - file:./
+        - classpath:/config/
+        - classpath:/
     #### 多环境配置文件使用：
     - IDEA：在`Environment variables`中输入：
         ```
@@ -122,3 +153,7 @@
 - `Redis` [虚假的中文文档](http://www.redis.cn/documentation.html) [官方文档](https://redis.io/documentation) [菜鸟教程](https://www.runoob.com/redis/redis-install.html)
 - `FreeMarker` [参考手册](http://freemarker.foofun.cn/toc.html)
 - `PostgreSQL`
+- `Swagger2`
+- `JWT`
+- `Shrio`
+- `JavaMailSender`
