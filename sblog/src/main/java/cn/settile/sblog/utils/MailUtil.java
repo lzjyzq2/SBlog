@@ -1,15 +1,20 @@
 package cn.settile.sblog.utils;
 
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.util.StopWatch;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import javax.mail.internet.MimeMessage;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * @description 发送邮件工具，支持发送纯文本邮件、html邮件、附件邮件。
@@ -27,6 +32,10 @@ public class MailUtil {
      */
     @Autowired
     JavaMailSender mailSender;
+
+    @Autowired
+    FreeMarkerConfigurer freeMarkerConfigurer;
+
 
     /**
      * 发送不含附件，且不含嵌入html静态资源页面的纯文本简单邮件
@@ -171,5 +180,24 @@ public class MailUtil {
             log.error("邮件发送失败, 失败原因 :{} 。", e.getMessage(), e);
             throw e;
         }
+    }
+
+    /**
+     * 发送的邮件(支持带附件/html类型的邮件)
+     *
+     * @param deliver
+     *            发送人邮箱名 如： javalsj@163.com
+     * @param receivers
+     *            收件人，可多个收件人 如：11111@qq.com,2222@163.com
+     * @param carbonCopys
+     *            抄送人，可多个抄送人 如：3333@sohu.com
+     * @param subject
+     *            邮件主题 如：您收到一封高大上的邮件，请查收。
+     * @throws Exception
+     *             邮件发送过程中的异常信息
+     */
+    public void sendFreeMarkerHtmlMail(String deliver, String[] receivers, String[] carbonCopys, String subject, String templateName,Object model) throws Exception{
+            Template template = freeMarkerConfigurer.getConfiguration().getTemplate(templateName+".ftl");
+            sendHtmlEmail(deliver,receivers,carbonCopys,subject, FreeMarkerTemplateUtils.processTemplateIntoString(template,model));
     }
 }
