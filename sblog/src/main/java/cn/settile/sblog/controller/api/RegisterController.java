@@ -1,23 +1,23 @@
 package cn.settile.sblog.controller.api;
 
+import cn.settile.sblog.configuration.SblogConfiguration;
 import cn.settile.sblog.exception.ServiceException;
 import cn.settile.sblog.exception.result.Result;
+import cn.settile.sblog.filter.aspect.AccessLimit;
 import cn.settile.sblog.model.entity.Role;
 import cn.settile.sblog.model.entity.User;
 import cn.settile.sblog.service.RoleService;
+import cn.settile.sblog.service.ThemeService;
 import cn.settile.sblog.service.UserService;
-import cn.settile.sblog.utils.CommonUtil;
-import cn.settile.sblog.utils.PasswordUtil;
+import cn.settile.sblog.utils.*;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.time.Duration;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author : lzjyz
@@ -36,7 +36,14 @@ public class RegisterController {
     UserService userService;
     @Autowired
     RoleService roleService;
-
+    @Autowired
+    MailUtil mailUtil;
+    @Autowired
+    RedisUtil redisUtil;
+    @Autowired
+    ThemeService themeService;
+    @Autowired
+    SblogConfiguration sblogConfiguration;
     //TODO:由配置文件控制
     /**
      * 用户名最大长度
@@ -97,12 +104,13 @@ public class RegisterController {
      */
     @ApiOperation(value = "注册接口", notes = "用户输入用户信息进行注册，返回注册结果", httpMethod = "PUT", response = String.class)
     @PutMapping
-    public Result register(@RequestBody User user) throws ServiceException{
-        boolean checkout = checkUserInfoIsCurrent(user);
+    public Result register(@RequestBody User user,@RequestParam String captcha) throws ServiceException{
+        boolean checkout = checkUserInfoIsCurrent(user,captcha);
+        log.info("checkout:{}",checkout);
         boolean canReg = userService.canRegisterUser(user);
         if (checkout && canReg) {
-            //TODO:密码加密
             try {
+                log.info("信息正确");
                 user.setSalt(PasswordUtil.getSaltString());
                 String password = PasswordUtil.encrypt(user.getUname(),user.getPassword(),user.getSalt());
                 user.setPassword(password);
@@ -126,13 +134,39 @@ public class RegisterController {
         }
     }
 
+    /** 发送验证码
+     * 限制每60秒，请求一次发送
+     * @param username 待注册用户名
+     * @param email 用户邮箱
+     * @return 邮件发送结果
+     */
+    @PostMapping("/captcha")
+    @AccessLimit(time = 60,count = 1)
+    @ApiOperation(value = "注册接口", notes = "用户输入用户信息进行注册，返回注册结果", httpMethod = "POST", response = Result.class)
+    public Result sendCaptcha(@RequestParam String username, @RequestParam String email){
+        if(checkUserName(username)&&checkEmail(email)){
+            String captcha = CommonUtil.getCode(6);
+            redisUtil.set(REG_CODE_CACHE+username+":"+email,captcha, TimeUnit.MINUTES.toSeconds(15));
+            Map<String,String> data = new HashMap<>();
+            data.put("webSiteUrl",sblogConfiguration.getWebUrl());
+            data.put("webSiteName",sblogConfiguration.getWebName());
+            data.put("captcha",captcha);
+            try {
+                mailUtil.sendFreeMarkerHtmlMail(sblogConfiguration.getMailName(),
+                        new String[]{email},new String[]{}, MessagesUtil.get("register.mail.title"),themeService.render("message"),data);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return Result.REGISTER_MAIL_SUCCESS;
+    }
     /**
      * 检查待注册User信息是否正确
      *
      * @param user 待检测User
      * @return false：错误，true：正确
      */
-    public boolean checkUserInfoIsCurrent(User user) {
+    public boolean checkUserInfoIsCurrent(User user,String captcha) {
         boolean flag = true;
         if (CommonUtil.isEmpty(user.getUname()) || !checkUserName(user.getUname())) {
             flag = false;
@@ -147,7 +181,12 @@ public class RegisterController {
         if(CommonUtil.isEmpty(user.getEmail())||!checkEmail(user.getEmail())){
             flag = false;
         }
-        //TODO:完善注册流程，手机号、邮箱的检测、验证、绑定
+        if(CommonUtil.isEmpty(captcha)){
+            flag = false;
+        }
+        if(!redisUtil.get(REG_CODE_CACHE+user.getUname()+":"+user.getEmail()).equals(captcha)){
+            flag = false;
+        }
         return flag;
     }
 

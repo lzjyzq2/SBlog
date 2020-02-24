@@ -53,8 +53,7 @@ public class ShiroConfig {
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         // 配置不会被拦截的链接 顺序判断
         filterChainDefinitionMap.put("/api/login", "anon"); //登录接口排除
-        filterChainDefinitionMap.put("/api/register", "anon");
-
+        filterChainDefinitionMap.put("/api/register/**", "anon");
         filterChainDefinitionMap.put("/swagger-ui.html","anon");
         filterChainDefinitionMap.put("/favicon.ico","anon");
         filterChainDefinitionMap.put("/swagger/**","anon");

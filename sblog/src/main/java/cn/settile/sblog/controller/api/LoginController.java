@@ -53,8 +53,8 @@ public class LoginController {
         return result;
     }
 
-    public boolean checkPasswordIsCurrent(User user,String loginPWD){
-        String loginpwd = PasswordUtil.encrypt(user.getUname(),loginPWD,user.getSalt());
+    public boolean checkPasswordIsCurrent(User user,String loginPassword){
+        String loginpwd = PasswordUtil.encrypt(user.getUname(),loginPassword,user.getSalt());
         if (loginpwd.equals(user.getPassword())){
             log.info("login success");
             return true;

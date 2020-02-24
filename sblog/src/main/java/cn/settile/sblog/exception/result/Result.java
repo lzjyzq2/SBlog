@@ -43,6 +43,8 @@ public enum Result{
      */
     REGISTER_ERR(12,"register.err"),
 
+    REGISTER_MAIL_FAIL(13,"register.mail.fail"),
+    REGISTER_MAIL_SUCCESS(14,"register.mail.success"),
     /**
      *
      */
