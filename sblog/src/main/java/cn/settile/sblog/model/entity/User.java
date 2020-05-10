@@ -1,5 +1,6 @@
 package cn.settile.sblog.model.entity;
 
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import java.util.Set;
  * @author : lzjyz
  * @date : 2019-08-19 20:35
  */
+@Builder
 @Getter
 @Setter
 @EqualsAndHashCode(exclude = {"roles", "books", "histories",
@@ -23,11 +25,12 @@ import java.util.Set;
 @Table(name = "user_info")
 @EntityListeners(AuditingEntityListener.class)
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long uid;       // 用户id
     @Column(name = "uname", nullable = false, unique = true)
-    private String uname;   // 登录名，不可改
+    private String username;   // 登录名，不可改
 
     @Column(name = "nick", nullable = false, unique = true)
     private String nick;    // 用户昵称，可改
@@ -38,7 +41,7 @@ public class User {
     @Column(name = "salt", nullable = false)
     private String salt;    // 加密盐值
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false,unique = true)
     private String email;
 
     @Column(name = "phone")
@@ -82,7 +85,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "uid=" + uid +
-                ", uname='" + uname + '\'' +
+                ", uname='" + username + '\'' +
                 ", nick='" + nick + '\'' +
                 ", password='" + password + '\'' +
                 ", salt='" + salt + '\'' +

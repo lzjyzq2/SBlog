@@ -1,5 +1,6 @@
 package cn.settile.sblog.model.entity;
 
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,7 @@ import java.util.Set;
 @EqualsAndHashCode(exclude = {"subsections"})
 @Entity
 @Table(name = "book")
+@Builder
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

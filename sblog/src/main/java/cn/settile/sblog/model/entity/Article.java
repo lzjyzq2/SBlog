@@ -1,8 +1,6 @@
 package cn.settile.sblog.model.entity;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -22,6 +20,7 @@ import java.util.Set;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "Article")
+@Builder
 public class Article {
     @Id
     private long id;
@@ -43,11 +42,17 @@ public class Article {
     @Column(columnDefinition = "text")
     private String content;
     /**
-     * 创建和最后更新时间
+     * 创建时间
      */
     @Column(nullable = false) @CreatedDate
+    private Date createTime;
+
+    /**
+     * 最后更新时间
+     */
+    @Column(nullable = false)
     @LastModifiedDate
-    private Date time;
+    private Date updateTime;
 
     /**
      * 能否评论：false-不能，true-能
@@ -70,16 +75,19 @@ public class Article {
     /**
      * 浏览量
      */
+    @ColumnDefault(value = "0")
     private long views;
 
     /**
      * 日前阅读量
      */
+    @ColumnDefault(value = "0")
     private long dayView;
 
     /**
      * 赞同数
      */
+    @ColumnDefault(value = "0")
     private long approve;
     /**
      * 文章所具有的标签
@@ -106,7 +114,8 @@ public class Article {
                 ", user=" + user +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
-                ", time=" + time +
+                ", createTime=" + createTime +
+                ", updateTime="+ updateTime +
                 ", canComment=" + canComment +
                 ", canView=" + canView +
                 ", canCopy=" + canCopy +

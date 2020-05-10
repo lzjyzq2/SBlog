@@ -16,12 +16,10 @@ public class ConvertUtil {
     public static UserDto convertUser(User user){
         UserDto userDto = new UserDto();
         userDto.setUid(user.getUid());
-        userDto.setUname(user.getUname());
+        userDto.setUname(user.getUsername());
         userDto.setNick(user.getNick());
         userDto.setEmail(user.getEmail());
         userDto.setPhone(user.getPhone());
-        userDto.setCreated(user.getCreated());
-        userDto.setUpdated(user.getUpdated());
         return userDto;
     }
 }
