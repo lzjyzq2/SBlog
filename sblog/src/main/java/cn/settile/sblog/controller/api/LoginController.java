@@ -4,6 +4,7 @@ import cn.settile.sblog.exception.result.Result;
 import cn.settile.sblog.filter.aspect.AccessLimit;
 import cn.settile.sblog.model.dto.LoginInfo;
 import cn.settile.sblog.model.entity.User;
+import cn.settile.sblog.model.param.LoginParam;
 import cn.settile.sblog.service.UserService;
 import cn.settile.sblog.utils.*;
 import io.swagger.annotations.Api;
@@ -14,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -34,43 +38,41 @@ public class LoginController {
 
 
     @ApiOperation(value = "登录接口", notes = "用户输入用户名和密码进行登录，返回用户部分信息与Token", httpMethod = "POST", response = String.class)
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", value = "用户名", dataType = "String"),
-            @ApiImplicitParam(name = "password", value = "密码", dataType = "String")
-    })
     @PostMapping
     @AccessLimit(time = 5,count = 2,timeUnit = TimeUnit.SECONDS)
-    public Result login(@RequestParam String username,@RequestParam String password) {
+    public Result login(@RequestBody LoginParam loginParam, HttpServletRequest request, HttpServletResponse response) {
         Result result = Result.LOGIN_FAIL;
-        if (CommonUtil.isNotEmpty(username) && CommonUtil.isNotEmpty(password)
-                && RegisterController.checkPassword(password) && RegisterController.checkUserName(username)) {
-            User loginUser = userService.getUserByUname(username);
-            if(loginUser!=null&&checkPasswordIsCurrent(loginUser,password)){
+        if (CommonUtil.isNotEmpty(loginParam.getUsername()) && CommonUtil.isNotEmpty(loginParam.getPassword())
+                && RegisterController.checkPassword(loginParam.getPassword()) && RegisterController.checkUserName(loginParam.getUsername())) {
+            User loginUser = userService.getUserByUname(loginParam.getUsername());
+            if(loginUser!=null&&checkPasswordIsCurrent(loginUser,loginParam.getPassword())){
                 result = Result.LOGIN_SUCCESS;
-                result.setData(getUserLoginInfo(loginUser));
+                LoginInfo loginInfo = getUserLoginInfo(loginUser);
+                result.setData(loginInfo);
+                response.addCookie(new Cookie("token",loginInfo.getToken()));
             }
         }
         return result;
     }
 
     public boolean checkPasswordIsCurrent(User user,String loginPassword){
-        String loginpwd = PasswordUtil.encrypt(user.getUname(),loginPassword,user.getSalt());
+        String loginpwd = PasswordUtil.encrypt(user.getUsername(),loginPassword,user.getSalt());
         if (loginpwd.equals(user.getPassword())){
             log.info("login success");
             return true;
         }else {
-            return  false;
+            return false;
         }
     }
 
     public LoginInfo getUserLoginInfo(User user){
         LoginInfo info = new LoginInfo();
         info.setUid(user.getUid());
-        info.setUname(user.getUname());
+        info.setUname(user.getUsername());
         info.setNick(user.getNick());
         info.setCreated(user.getCreated());
         info.setUpdated(user.getUpdated());
-        String token = JwtUtil.sign(user.getUname(), user.getPassword());
+        String token = JwtUtil.sign(user.getUsername(), user.getPassword());
         redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
         redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME / 1000);
         info.setToken(token);

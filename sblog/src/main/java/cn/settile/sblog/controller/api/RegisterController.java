@@ -6,6 +6,7 @@ import cn.settile.sblog.exception.result.Result;
 import cn.settile.sblog.filter.aspect.AccessLimit;
 import cn.settile.sblog.model.entity.Role;
 import cn.settile.sblog.model.entity.User;
+import cn.settile.sblog.model.param.RegisterParam;
 import cn.settile.sblog.service.RoleService;
 import cn.settile.sblog.service.ThemeService;
 import cn.settile.sblog.service.UserService;
@@ -99,31 +100,36 @@ public class RegisterController {
     /**
      * 注册用户API接口，方法：PUT
      *
-     * @param user 待注册User
+     * @param registerParam 待注册User
      * @return 注册结果
      */
     @ApiOperation(value = "注册接口", notes = "用户输入用户信息进行注册，返回注册结果", httpMethod = "PUT", response = String.class)
     @PutMapping
-    public Result register(@RequestBody User user,@RequestParam String captcha) throws ServiceException{
-        boolean checkout = checkUserInfoIsCurrent(user,captcha);
+    public Result register(@RequestBody RegisterParam registerParam) throws ServiceException{
+        boolean checkout = checkUserInfoIsCurrent(registerParam);
         log.info("checkout:{}",checkout);
-        boolean canReg = userService.canRegisterUser(user);
+        User reg_user = User.builder().username(registerParam.getUsername())
+                .nick(registerParam.getNickname())
+                .email(registerParam.getEmail())
+                .password(registerParam.getPassword())
+                .build();
+        boolean canReg = userService.canRegisterUser(reg_user);
         if (checkout && canReg) {
             try {
                 log.info("信息正确");
-                user.setSalt(PasswordUtil.getSaltString());
-                String password = PasswordUtil.encrypt(user.getUname(),user.getPassword(),user.getSalt());
-                user.setPassword(password);
-                Set<Role> roleSet = user.getRoles();
+                reg_user.setSalt(PasswordUtil.getSaltString());
+                String password = PasswordUtil.encrypt(registerParam.getUsername(),registerParam.getPassword(),reg_user.getSalt());
+                registerParam.setPassword(password);
+                Set<Role> roleSet = reg_user.getRoles();
                 if(null==roleSet){
                     roleSet = new HashSet<>();
                 }else {
                     roleSet.clear();
                 }
                 roleSet.add(roleService.getRoleByRoleName(RoleService.DEFAULT_ROLE_NAME));
-                user.setRoles(roleSet);
-                log.error(user.toString());
-                userService.registerUser(user);
+                reg_user.setRoles(roleSet);
+                log.error(registerParam.toString());
+                userService.registerUser(reg_user);
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new ServiceException(Result.REGISTER_ERR);
@@ -140,9 +146,9 @@ public class RegisterController {
      * @param email 用户邮箱
      * @return 邮件发送结果
      */
-    @PostMapping("/captcha")
+    @GetMapping("/captcha")
     @AccessLimit(time = 60,count = 1)
-    @ApiOperation(value = "注册接口", notes = "用户输入用户信息进行注册，返回注册结果", httpMethod = "POST", response = Result.class)
+    @ApiOperation(value = "注册验证码接口", notes = "用户输入邮箱后，通过邮箱发送验证码", httpMethod = "GET", response = Result.class)
     public Result sendCaptcha(@RequestParam String username, @RequestParam String email){
         if(checkUserName(username)&&checkEmail(email)){
             String captcha = CommonUtil.getCode(6);
@@ -163,28 +169,28 @@ public class RegisterController {
     /**
      * 检查待注册User信息是否正确
      *
-     * @param user 待检测User
+     * @param registerParam 待检测User
      * @return false：错误，true：正确
      */
-    public boolean checkUserInfoIsCurrent(User user,String captcha) {
+    public boolean checkUserInfoIsCurrent(RegisterParam registerParam) {
         boolean flag = true;
-        if (CommonUtil.isEmpty(user.getUname()) || !checkUserName(user.getUname())) {
+        if (CommonUtil.isEmpty(registerParam.getUsername()) || !checkUserName(registerParam.getUsername())) {
             flag = false;
         }
-        if (CommonUtil.isEmpty(user.getNick()) || !checkNickName(user.getNick())) {
+        if (CommonUtil.isEmpty(registerParam.getNickname()) || !checkNickName(registerParam.getNickname())) {
             flag = false;
         }
 
-        if (CommonUtil.isEmpty(user.getPassword())||!checkPassword(user.getPassword())) {
+        if (CommonUtil.isEmpty(registerParam.getPassword())||!checkPassword(registerParam.getPassword())) {
             flag = false;
         }
-        if(CommonUtil.isEmpty(user.getEmail())||!checkEmail(user.getEmail())){
+        if(CommonUtil.isEmpty(registerParam.getEmail())||!checkEmail(registerParam.getEmail())){
             flag = false;
         }
-        if(CommonUtil.isEmpty(captcha)){
+        if(CommonUtil.isEmpty(registerParam.getCaptcha())){
             flag = false;
         }
-        if(!redisUtil.get(REG_CODE_CACHE+user.getUname()+":"+user.getEmail()).equals(captcha)){
+        if(CommonUtil.isNotEmpty(registerParam.getCaptcha())&&!registerParam.getCaptcha().equals(redisUtil.get(REG_CODE_CACHE+registerParam.getUsername()+":"+registerParam.getEmail()))){
             flag = false;
         }
         return flag;
