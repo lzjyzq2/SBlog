@@ -83,7 +83,7 @@ public class CustomRealm extends AuthorizingRealm {
         }
 
         // 查询用户信息
-        User loginUser = new User();
+        User loginUser = User.builder().build();
         User user = userService.getUserByUname(username);
         if (user == null) {
             throw new AuthenticationException("用户不存在!");
