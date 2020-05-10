@@ -5,13 +5,15 @@ import cn.settile.sblog.model.entity.Role;
 import cn.settile.sblog.model.entity.User;
 import cn.settile.sblog.repository.UserDao;
 import cn.settile.sblog.service.UserService;
+import cn.settile.sblog.utils.CommonConstant;
+import cn.settile.sblog.utils.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Handler;
 
 /**
  * @author : lzjyz
@@ -26,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserByUname(String uname) {
-        return userDao.getUserByUname(uname);
+        return userDao.getUserByUsername(uname);
     }
 
     @Override
@@ -37,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean canRegisterUser(User user) {
         boolean flag = false;
-        if (!userDao.existsUserByEmailOrUname(user.getEmail(), user.getUname())) {
+        if (!userDao.existsUserByEmailOrUsername(user.getEmail(), user.getUsername())) {
             flag = true;
         }
         return flag;
@@ -89,6 +91,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean existsUserByUname(String uname) {
-        return userDao.existsUserByUname(uname);
+        return userDao.existsUserByUsername(uname);
+    }
+
+    @Override
+    public User getUserByRequest(HttpServletRequest request) throws Exception {
+        User user = userDao.getUserByUsername(JwtUtil.getUserNameByToken(request));
+        return user;
+    }
+
+    @Override
+    public String getUserNameByRequest(HttpServletRequest request) throws Exception {
+        return JwtUtil.getUserNameByToken(request);
     }
 }

@@ -4,6 +4,7 @@ import cn.settile.sblog.model.entity.Permission;
 import cn.settile.sblog.model.entity.Role;
 import cn.settile.sblog.model.entity.User;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
 
 /**
@@ -35,13 +36,47 @@ public interface UserService {
      */
     void registerUser(User user);
 
+    /** 获取用户具有的所有角色
+     * @param user 用户
+     * @return 角色集合
+     */
     Set<Role> getRoleSet(User user);
 
+    /** 获取用户具有的所有角色名
+     * @param user 用户
+     * @return 角色名称集
+     */
     Set<String> getRoleNameSet(User user);
 
+    /** 获取用户具有的所有用户权限
+     * @param user 用户
+     * @return 用户权限
+     */
     Set<Permission> getPermissionSet(User user);
 
+    /** 获取用户具有的所有用户权限名称
+     * @param user 用户
+     * @return 用户权限名称
+     */
     Set<String> getPermissionNameSet(User user);
 
+    /** 是否存在该名称的用户
+     * @param uname 用户名
+     * @return {@code false}:不存在,{@code true}:存在
+     */
     boolean existsUserByUname(String uname);
+
+    /** 获取发起请求的用户
+     * @param request 请求
+     * @return 请求资源的用户
+     * @throws Exception 不存在用户
+     */
+    User getUserByRequest(HttpServletRequest request) throws Exception;
+
+    /** 获取发起请求的用户名
+     * @param request 请求
+     * @return 请求资源的用户的用户名
+     * @throws Exception 不存在用户
+     */
+    String getUserNameByRequest(HttpServletRequest request) throws Exception;
 }
