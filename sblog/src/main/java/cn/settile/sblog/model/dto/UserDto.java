@@ -17,6 +17,4 @@ public class UserDto {
     private String nick;    // 用户昵称，可改
     private String email;
     private String phone;
-    private Date created;   // 创建时间
-    private Date updated;   // 修改时间
 }
