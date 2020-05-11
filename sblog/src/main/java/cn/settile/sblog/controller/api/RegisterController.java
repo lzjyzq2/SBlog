@@ -111,7 +111,6 @@ public class RegisterController {
         User reg_user = User.builder().username(registerParam.getUsername())
                 .nick(registerParam.getNickname())
                 .email(registerParam.getEmail())
-                .password(registerParam.getPassword())
                 .build();
         boolean canReg = userService.canRegisterUser(reg_user);
         if (checkout && canReg) {
@@ -119,7 +118,7 @@ public class RegisterController {
                 log.info("信息正确");
                 reg_user.setSalt(PasswordUtil.getSaltString());
                 String password = PasswordUtil.encrypt(registerParam.getUsername(),registerParam.getPassword(),reg_user.getSalt());
-                registerParam.setPassword(password);
+                reg_user.setPassword(password);
                 Set<Role> roleSet = reg_user.getRoles();
                 if(null==roleSet){
                     roleSet = new HashSet<>();
@@ -128,7 +127,6 @@ public class RegisterController {
                 }
                 roleSet.add(roleService.getRoleByRoleName(RoleService.DEFAULT_ROLE_NAME));
                 reg_user.setRoles(roleSet);
-                log.error(registerParam.toString());
                 userService.registerUser(reg_user);
             } catch (Exception e) {
                 e.printStackTrace();
