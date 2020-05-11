@@ -12,4 +12,15 @@ import lombok.Data;
 public class LoginParam {
     private String username;
     private String password;
+
+    private boolean checkIsRight(){
+        boolean flag = true;
+        if(username.trim().isEmpty()){
+            flag = false;
+        }
+        if (password.trim().isEmpty()){
+            flag = false;
+        }
+        return flag;
+    }
 }
