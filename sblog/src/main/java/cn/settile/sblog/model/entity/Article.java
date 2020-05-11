@@ -12,7 +12,6 @@ import java.util.Set;
 
 /**
  * @author : lzjyz
- * @date : 2019-08-19 22:43
  */
 @Getter
 @Setter
@@ -21,7 +20,10 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "Article")
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Article {
+
     @Id
     private long id;
     @JoinColumn(nullable = false,name = "uid") @ManyToOne(cascade = {CascadeType.REFRESH})
@@ -35,6 +37,13 @@ public class Article {
      * 文章标题
      */
     private String title;
+
+
+    /**
+     * 文章摘要
+     */
+    private String summary;
+
     /**
      * 文章内容
      */
@@ -113,6 +122,7 @@ public class Article {
                 "id=" + id +
                 ", user=" + user +
                 ", title='" + title + '\'' +
+                ", summary='" + summary + '\'' +
                 ", content='" + content + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime="+ updateTime +

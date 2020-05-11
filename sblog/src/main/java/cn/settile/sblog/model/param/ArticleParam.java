@@ -30,6 +30,9 @@ public class ArticleParam {
      * 文章标题
      */
     private String title;
+
+    private String summary;
+
     /**
      * 文章内容
      */

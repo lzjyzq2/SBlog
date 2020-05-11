@@ -76,6 +76,7 @@ public class ArticleController {
             ArticleDto article = ArticleDto.builder()
                     .id(articleId)
                     .title(articleById.getTitle())
+                    .summary(articleById.getSummary())
                     .content(articleById.getContent())
                     .tags(articleById.getTags())
                     .approves(articleById.getApprove())
@@ -102,6 +103,7 @@ public class ArticleController {
                     subsectionService.existsSubsectionByIdAndUsername(articleParam.getSubsectionId(), user.getUsername())) {
                 Article article = Article.builder()
                         .title(articleParam.getTitle())
+                        .summary(articleParam.getSummary())
                         .content(articleParam.getContent())
                         .subsection(subsectionService.getSubsectionById(articleParam.getSubsectionId()))
                         .user(user)
@@ -129,6 +131,7 @@ public class ArticleController {
                             userService.getUserByRequest(request).getUsername())) {
                 Article article = articleService.getArticleById(articleParam.getId());
                 article.setTitle(articleParam.getTitle());
+                article.setSummary(articleParam.getSummary());
                 article.setContent(articleParam.getContent());
                 article.setCanComment(articleParam.isCanComment());
                 article.setCanCopy(articleParam.isCanCopy());
@@ -163,7 +166,7 @@ public class ArticleController {
                 articles.add(ArticleDto.builder()
                         .id(article.getId())
                         .title(article.getTitle())
-                        .content(article.getContent().substring(0, 200))
+                        .summary(article.getContent().substring(0, 200))
                         .createTime(article.getCreateTime())
                         .approves(article.getApprove())
                         .comments(article.getComments().size())

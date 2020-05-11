@@ -25,6 +25,7 @@ public class ArticleDto {
     private static Article article;
     private long id;
     private String title;
+    private String summary;
     private String content;
     private Date createTime;
     private Date updateTime;
@@ -42,6 +43,7 @@ public class ArticleDto {
         return "ArticleDto{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
+                ", summary='" + summary + '\'' +
                 ", content='" + content + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
