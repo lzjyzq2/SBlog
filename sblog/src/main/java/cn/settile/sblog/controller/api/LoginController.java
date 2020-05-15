@@ -49,7 +49,10 @@ public class LoginController {
                 result = Result.LOGIN_SUCCESS;
                 LoginInfo loginInfo = getUserLoginInfo(loginUser);
                 result.setData(loginInfo);
-                response.addCookie(new Cookie("token",loginInfo.getToken()));
+                Cookie cookie = new Cookie("token",loginInfo.getToken());
+                cookie.setDomain(request.getServerName());
+                cookie.setMaxAge(604800);
+                response.addCookie(cookie);
             }
         }
         return result;
@@ -74,7 +77,7 @@ public class LoginController {
         info.setUpdated(user.getUpdated());
         String token = JwtUtil.sign(user.getUsername(), user.getPassword());
         redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
-        redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME / 1000);
+        redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME);
         info.setToken(token);
         return info;
     }
