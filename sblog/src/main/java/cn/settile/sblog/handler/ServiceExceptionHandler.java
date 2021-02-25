@@ -53,8 +53,9 @@ public class ServiceExceptionHandler implements ErrorController {
     }
 
     @ExceptionHandler(NoFoundException.class)
-    public String handleNoFound(NoFoundException e) {
-        return themeService.render("404");
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Result handleNoFound(NoFoundException e) {
+        return e.getResult();
     }
 
     @ExceptionHandler(ServiceException.class)

@@ -2,6 +2,7 @@ package cn.settile.sblog.exception.result;
 
 import cn.settile.sblog.utils.MessagesUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -69,7 +70,17 @@ public enum Result{
     /**
      *
      */
-    AUTHENTICATION_ERR(32,"authentication.err");
+    AUTHENTICATION_ERR(32,"authentication.err"),
+
+    /**
+     * 资源不存在
+     */
+    NOT_FOUND(404,"res.not_found"),
+
+    /**
+     * 临时对象，用于传递特殊数据
+     */
+    TEMP(-1,"temp");
 
 
     private int code;
@@ -77,7 +88,7 @@ public enum Result{
     private Object data = null;
 
 
-    private Result(int code,String message){
+    private Result(int code, String message){
         this.code = code;
         this.message = MessagesUtil.get(message);
     }
@@ -107,13 +118,13 @@ public enum Result{
     }
 
     public static Result Builder(Result result, Object data){
-        result.setData(data);
-        return result;
+        return Builder(result,result.getMessage(),data);
     }
 
     public static Result Builder(Result result,String message,Object data){
-        result.setMessage(message);
-        result.setData(data);
-        return result;
+        Result.TEMP.setCode(result.getCode());
+        Result.TEMP.setMessage(message);
+        Result.TEMP.setData(data);
+        return Result.TEMP;
     }
 }

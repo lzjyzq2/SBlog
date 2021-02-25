@@ -2,9 +2,11 @@ package cn.settile.sblog.service;
 
 import cn.settile.sblog.model.entity.Article;
 import cn.settile.sblog.model.entity.Subsection;
+import cn.settile.sblog.model.entity.Tag;
 import cn.settile.sblog.model.entity.User;
 
 import java.awt.print.Pageable;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -52,12 +54,14 @@ public interface ArticleService {
     /** 存储
      * @param article 带存储文章
      */
-    public void save(Article article);
+    public Article save(Article article);
 
     /** 存储文章集合
      * @param articles 带存储文章集合
      */
     public void saveAll(Set<Article> articles);
+
+    public List<Article> findRectlyArticles(String username, int pageSize);
 
     /** 获取是否存在某用户的指定ID的文章
      * @param id 文章ID
@@ -65,6 +69,14 @@ public interface ArticleService {
      * @return {@code false}:不存在 {@code true}:存在
      */
     public boolean existsArticleByIdAndUsername(long id,String username);
+
+    /** 获取该用户名的用户的文章
+     * @param username 用户名
+     * @return 文章集合
+     */
+    public Set<Article> findArticleByUsername(String username);
+
+    public int countArticlesByTag(Tag tag);
 
     /** 删除文章
      * @param article 文章实体
@@ -75,4 +87,10 @@ public interface ArticleService {
      * @param id 文章ID
      */
     public void delete(long id);
+
+    /** 获取是否存在某用户的指定ID的文章
+     * @param id 文章ID
+     * @return {@code false}:不存在 {@code true}:存在
+     */
+    boolean existsArticlesById(long id);
 }

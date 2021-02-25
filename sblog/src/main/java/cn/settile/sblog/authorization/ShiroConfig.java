@@ -54,6 +54,11 @@ public class ShiroConfig {
         // 配置不会被拦截的链接 顺序判断
         filterChainDefinitionMap.put("/api/login", "anon"); //登录接口排除
         filterChainDefinitionMap.put("/api/register/**", "anon");
+        filterChainDefinitionMap.put("/api/user/public/**", "anon");
+        filterChainDefinitionMap.put("/api/article/view/**","anon");
+        filterChainDefinitionMap.put("/api/comment/artcile/**/page/**","anon");
+        filterChainDefinitionMap.put("/api/comment/**/replys/**","anon");
+
         filterChainDefinitionMap.put("/swagger-ui.html","anon");
         filterChainDefinitionMap.put("/favicon.ico","anon");
         filterChainDefinitionMap.put("/swagger/**","anon");

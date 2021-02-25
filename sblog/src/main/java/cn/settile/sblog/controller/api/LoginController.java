@@ -51,6 +51,7 @@ public class LoginController {
                 result.setData(loginInfo);
                 Cookie cookie = new Cookie("token",loginInfo.getToken());
                 cookie.setDomain(request.getServerName());
+                cookie.setPath("/");
                 cookie.setMaxAge(604800);
                 response.addCookie(cookie);
             }

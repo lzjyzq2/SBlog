@@ -33,6 +33,14 @@ repositories {
     google()
 }
 
+allprojects {
+    repositories {
+        google()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        jcenter()
+    }
+}
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 //	compile 'org.springframework.boot:spring-boot-starter-security'

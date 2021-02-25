@@ -3,6 +3,7 @@ package cn.settile.sblog.controller.api;
 import cn.settile.sblog.exception.result.Result;
 import cn.settile.sblog.model.dto.ArticleDto;
 import cn.settile.sblog.model.dto.SubsectionDto;
+import cn.settile.sblog.model.entity.Book;
 import cn.settile.sblog.model.entity.Subsection;
 import cn.settile.sblog.model.param.SubsectionParam;
 import cn.settile.sblog.service.BookService;
@@ -14,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -60,7 +63,7 @@ public class SubsectionController {
     public Result info(@PathVariable long subsectionId, HttpServletRequest request) throws Exception {
         if(subsectionService.existsSubsectionByIdAndUsername(subsectionId,userService.getUserNameByRequest(request))){
             Subsection sub = subsectionService.getSubsectionById(subsectionId);
-            Set<ArticleDto> articleDtoSet = new HashSet<>();
+            List<ArticleDto> articleDtoSet = new ArrayList<>();
                     sub.getArticles().forEach(article -> {
                         articleDtoSet.add(ArticleDto.builder().id(article.getId())
                         .title(article.getTitle())
@@ -85,16 +88,21 @@ public class SubsectionController {
                     .book(bookService.getBookById(subsectionParam.getBookId()))
                     .name(subsectionParam.getName())
                     .build();
-            return Result.Builder(Result.SUCCESS,subsectionService.save(subsection));
+            subsection = subsectionService.save(subsection);
+            SubsectionDto subsectionDto = SubsectionDto.builder()
+                    .id(subsection.getId())
+                    .name(subsection.getName())
+                    .build();
+            return Result.Builder(Result.SUCCESS,subsectionDto);
         }
         return Result.FAIL;
     }
 
     @ApiOperation(value = "获取指定文集的分卷列表", httpMethod = "GET")
-    @GetMapping("/list/{bookId:(\\d+)}")
+    @GetMapping("/list/{bookId:\\d+}")
     public Result list(@PathVariable long bookId,HttpServletRequest request) throws Exception {
         if(bookService.existsBookByUsername(bookId,userService.getUserNameByRequest(request))){
-            Set<SubsectionDto> subsectionDtos = new HashSet<>();
+            List<SubsectionDto> subsectionDtos = new ArrayList<>();
             bookService.getBookById(bookId).getSubsections().forEach(subsection -> {
                 subsectionDtos.add(SubsectionDto.builder()
                 .id(subsection.getId())

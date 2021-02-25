@@ -2,12 +2,14 @@ package cn.settile.sblog.repository;
 
 import cn.settile.sblog.model.entity.Article;
 import cn.settile.sblog.model.entity.Subsection;
+import cn.settile.sblog.model.entity.Tag;
 import cn.settile.sblog.model.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -37,6 +39,12 @@ public interface ArticleDao extends JpaRepository<Article,Long> {
      */
     Set<Article> findArticlesByUser(User user);
 
+    /** 查找指定用户文章数据
+     * @param username 用户
+     * @return 文章集合
+     */
+    Set<Article> findArticlesByUser_Username(String username);
+
     /** 查找指定卷文章数据
      * @param subsection 卷
      * @return
@@ -58,4 +66,15 @@ public interface ArticleDao extends JpaRepository<Article,Long> {
      * @return {@code false}:不存在 {@code true}:存在
      */
     boolean existsArticleByIdAndUser_Username(long id,String username);
+
+    /**
+     *
+     */
+    Page<Article> findArticlesByUser_UsernameOrderByPublishTime(String username, Pageable pageable);
+
+    /** 统计含有某标签的文章数
+     * @param tag 标签
+     * @return 文章数
+     */
+    int countArticlesByTagsContains(Tag tag);
 }

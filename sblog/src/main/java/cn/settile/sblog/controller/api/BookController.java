@@ -14,11 +14,14 @@ import cn.settile.sblog.service.SubsectionService;
 import cn.settile.sblog.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -28,6 +31,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/user/book")
 @Api
+@Slf4j
 public class BookController {
     @Autowired
     BookService bookService;
@@ -39,10 +43,11 @@ public class BookController {
     @ApiOperation(value = "返回登录用户的文集", httpMethod = "GET")
     @GetMapping("/list")
     public Result list(HttpServletRequest request) throws Exception {
-        Set<BookDto> bookDtos = new HashSet<>();
+        List<BookDto> bookDtos = new ArrayList<>();
         bookService.findBooksByUsername(userService.getUserNameByRequest(request)).forEach(book -> {
             bookDtos.add(BookDto.builder().id(book.getId()).userId(book.getUser().getUid()).name(book.getName()).info(book.getInfo()).build());
         });
+        log.info(""+bookDtos);
         return Result.Builder(Result.SUCCESS,bookDtos);
     }
 
@@ -50,9 +55,9 @@ public class BookController {
     @GetMapping("/info/{bookId:(\\d+)}")
     public Result info(long bookId){
         Book bookData = bookService.getBookById(bookId);
-        Set<SubsectionDto> subsections = new HashSet<>();
+        List<SubsectionDto> subsections = new ArrayList<>();
         bookData.getSubsections().forEach(subsection -> {
-            Set<ArticleDto> articles = new HashSet<>();
+            List<ArticleDto> articles = new ArrayList<>();
             subsection.getArticles().forEach(article -> {
                 articles.add(ArticleDto.builder()
                 .id(article.getId())
@@ -86,14 +91,21 @@ public class BookController {
 
     @ApiOperation(value = "创建文集", httpMethod = "POST")
     @PostMapping("/new")
-    public Result createBook(@RequestBody BookParam bookParam){
+    public Result createBook(@RequestBody BookParam bookParam,HttpServletRequest request) throws Exception {
         if(bookParam.checkIsRight()){
             Book book = Book.builder()
                     .name(bookParam.getName())
                     .info(bookParam.getInfo())
+                    .user(userService.getUserByRequest(request))
                     .build();
-            bookService.save(book);
-            return Result.SUCCESS;
+            book = bookService.save(book);
+            BookDto bookDto = BookDto.builder()
+                    .id(book.getId())
+                    .name(book.getName())
+                    .info(book.getInfo())
+                    .userId(book.getUser().getUid())
+                    .build();
+            return Result.Builder(Result.SUCCESS,bookDto);
         }
         return Result.FAIL;
     }

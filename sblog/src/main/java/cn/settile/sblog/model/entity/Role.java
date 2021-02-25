@@ -24,7 +24,7 @@ public class Role {
     private String roleName;
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Permission> permissions;
-    @ManyToMany(mappedBy = "roles",fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<User> users;
 
     @Override

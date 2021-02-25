@@ -1,11 +1,9 @@
 package cn.settile.sblog.model.entity;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,10 +12,12 @@ import java.util.Set;
  */
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"subsections"})
+@EqualsAndHashCode(exclude = {"subsections","user"})
 @Entity
 @Table(name = "book")
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +25,9 @@ public class Book {
     @Column(name = "book_name",nullable = false)
     private String name;
 
+    @Builder.Default
+    @Column(nullable = false)
+    private boolean canView = true;
     /**
      * 描述信息
      */
@@ -32,9 +35,9 @@ public class Book {
     private String info;
 
     @OneToMany(mappedBy = "book",fetch = FetchType.LAZY)
-    private Set<Subsection> subsections;
+    private List<Subsection> subsections;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     User user;
 
     @Override
@@ -42,6 +45,8 @@ public class Book {
         return "Book{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", info='" + info + '\'' +
+                ", canView='" + canView + '\'' +
                 '}';
     }
 }

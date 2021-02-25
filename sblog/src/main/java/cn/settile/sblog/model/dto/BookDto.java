@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -22,7 +23,7 @@ public class BookDto {
     private long userId;
     private String name;
     private String info;
-    private Set<SubsectionDto> subsections;
+    private List<SubsectionDto> subsections;
 
     @Override
     public String toString() {

@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -22,7 +24,7 @@ public class SubsectionDto {
 
     private long id;
     private String name;
-    private Set<ArticleDto> articles;
+    private List<ArticleDto> articles;
 
     @Override
     public String toString() {
@@ -49,8 +51,8 @@ public class SubsectionDto {
      * @param subsections Set<Subsection>
      * @return Set<SubsectionDto>
      */
-    public static Set<SubsectionDto> of(@NotNull Set<Subsection> subsections){
-        Set<SubsectionDto> subsectionDtos = new HashSet<>();
+    public static List<SubsectionDto> of(@NotNull List<Subsection> subsections){
+        List<SubsectionDto> subsectionDtos = new ArrayList<>();
         subsections.forEach(subsection -> {
             subsectionDtos.add(SubsectionDto.of(subsection));
         });

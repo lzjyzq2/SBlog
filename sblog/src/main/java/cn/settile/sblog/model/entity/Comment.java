@@ -1,6 +1,8 @@
 package cn.settile.sblog.model.entity;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -17,6 +19,7 @@ import java.util.Set;
 @Table
 @EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(exclude = {"comments","article","commentApproves"})
+@Getter @Setter
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +30,7 @@ public class Comment {
 
     private String content;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     private Set<Comment> comments;
 
     @Column(nullable = false)
@@ -39,6 +42,8 @@ public class Comment {
 
     @ManyToOne
     private Article article;
+
+    private long parentCommentId = -1;
 
     @OneToMany(mappedBy = "comment")
     private Set<CommentApprove> commentApproves;

@@ -8,9 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author : lzjyz
@@ -25,9 +23,13 @@ public class ArticleDto {
     private static Article article;
     private long id;
     private String title;
+    @Builder.Default
+    private boolean autoSummary = true;
     private String summary;
     private String content;
-    private Date createTime;
+    @Builder.Default
+    private boolean isTaskPublish = false;
+    private Date publishTime;
     private Date updateTime;
     private boolean canComment;
     private boolean canView;
@@ -43,9 +45,11 @@ public class ArticleDto {
         return "ArticleDto{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
+                ", autoSummary='" + autoSummary +
                 ", summary='" + summary + '\'' +
                 ", content='" + content + '\'' +
-                ", createTime=" + createTime +
+                ", taskPublish=" + publishTime +
+                ", publishTime=" + publishTime +
                 ", updateTime=" + updateTime +
                 ", canComment=" + canComment +
                 ", canView=" + canView +
@@ -68,7 +72,10 @@ public class ArticleDto {
                 .id(article.getId())
                 .title(article.getTitle())
                 .content(article.getContent())
-                .createTime(article.getCreateTime())
+                .autoSummary(article.isAutoSummary())
+                .summary(article.getSummary())
+                .isTaskPublish(article.isTaskPublish())
+                .publishTime(article.getPublishTime())
                 .updateTime(article.getUpdateTime())
                 .canComment(article.isCanComment())
                 .canCopy(article.isCanCopy())
@@ -85,8 +92,8 @@ public class ArticleDto {
      * @param articles Set<Article>
      * @return Set<ArticleDto>
      */
-    public static Set<ArticleDto> of(@NotNull Set<Article> articles){
-        Set<ArticleDto> articleDtoSet = new HashSet<>();
+    public static List<ArticleDto> of(@NotNull List<Article> articles){
+        List<ArticleDto> articleDtoSet = new ArrayList<>();
         articles.forEach(article -> {
             articleDtoSet.add(ArticleDto.of(article));
         });

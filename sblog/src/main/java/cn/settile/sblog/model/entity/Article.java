@@ -24,7 +24,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class Article {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @JoinColumn(nullable = false,name = "uid") @ManyToOne(cascade = {CascadeType.REFRESH})
     private User user;
@@ -39,6 +39,8 @@ public class Article {
     private String title;
 
 
+    @Builder.Default
+    private boolean autoSummary = true;
     /**
      * 文章摘要
      */
@@ -47,14 +49,19 @@ public class Article {
     /**
      * 文章内容
      */
-    @Lob
     @Column(columnDefinition = "text")
+    @Basic(fetch = FetchType.LAZY)
     private String content;
+
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean isTaskPublish = false;
     /**
-     * 创建时间
+     * 发布时间
      */
     @Column(nullable = false) @CreatedDate
-    private Date createTime;
+    private Date publishTime;
 
     /**
      * 最后更新时间
@@ -63,6 +70,12 @@ public class Article {
     @LastModifiedDate
     private Date updateTime;
 
+    /**
+     * 文章状态 1:已发布 0:草稿箱 -1:回收站
+     */
+    @Builder.Default
+    @Column(nullable = false)
+    private  int state = 0;
     /**
      * 能否评论：false-不能，true-能
      */
@@ -122,9 +135,11 @@ public class Article {
                 "id=" + id +
                 ", user=" + user +
                 ", title='" + title + '\'' +
+                ", autoSummary='" + autoSummary +
                 ", summary='" + summary + '\'' +
                 ", content='" + content + '\'' +
-                ", createTime=" + createTime +
+                ", taskPublish=" + isTaskPublish +
+                ", publishTime=" + publishTime +
                 ", updateTime="+ updateTime +
                 ", canComment=" + canComment +
                 ", canView=" + canView +
@@ -132,6 +147,7 @@ public class Article {
                 ", views=" + views +
                 ", dayView=" + dayView +
                 ", approve=" + approve +
+                ", state =" + state  +
                 '}';
     }
 }

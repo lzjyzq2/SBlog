@@ -1,11 +1,9 @@
 package cn.settile.sblog.model.entity;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,6 +16,8 @@ import java.util.Set;
 @Table(name = "subsection")
 @EqualsAndHashCode(exclude = {"articles"})
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Subsection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,5 +31,5 @@ public class Subsection {
     private Book book;
 
     @OneToMany(mappedBy = "subsection")
-    private Set<Article> articles;
+    private List<Article> articles;
 }

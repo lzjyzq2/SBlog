@@ -2,9 +2,12 @@ package cn.settile.sblog.model.param;
 
 import cn.settile.sblog.model.entity.*;
 import cn.settile.sblog.utils.CommonUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -31,6 +34,8 @@ public class ArticleParam {
      */
     private String title;
 
+    private boolean autoSummary = true;
+
     private String summary;
 
     /**
@@ -40,8 +45,10 @@ public class ArticleParam {
     /**
      * 创建时间
      */
-    private Date createTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    private Date publishTime;
 
+    private boolean isTaskPublish = false;
     /**
      * 最后更新时间
      */
@@ -77,6 +84,7 @@ public class ArticleParam {
      */
     private long approve = 0;
 
+    private int state = 0;
     /**
      * 文章所具有的标签
      */
@@ -88,6 +96,30 @@ public class ArticleParam {
 
     @ManyToMany(mappedBy = "articles")
     private Set<UploadFile> uploadFiles;
+
+    @Override
+    public String toString() {
+        return "ArticleParam{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", subsectionId=" + subsectionId +
+                ", title='" + title + '\'' +
+                ", autoSummary='" + autoSummary +
+                ", summary='" + summary + '\'' +
+                ", content='" + content + '\'' +
+                ", publishTime=" + publishTime +
+                ", taskPublish=" + isTaskPublish +
+                ", updateTime=" + updateTime +
+                ", canComment=" + canComment +
+                ", canView=" + canView +
+                ", canCopy=" + canCopy +
+                ", views=" + views +
+                ", dayView=" + dayView +
+                ", approve=" + approve +
+                ", state=" + state +
+                ", tags=" + tags +
+                '}';
+    }
 
     public static boolean checkIsRight(ArticleParam articleParam){
         boolean flag = true;
@@ -102,4 +134,5 @@ public class ArticleParam {
         }
         return flag;
     }
+
 }

@@ -14,14 +14,12 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresGuest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author : lzjyz
@@ -43,45 +41,24 @@ public class ArticleController {
     @Autowired
     UserService userService;
 
-    @ApiOperation(value = "浏览指定文章ID的文章内容", httpMethod = "GET")
-    @GetMapping("/view/{articleId}")
-    @RequiresGuest
-    public Result view(@PathVariable long articleId) {
-        Article articleById = articleService.getArticleById(articleId);
-        if (articleById.isCanView()) {
-            ArticleDto article = ArticleDto.builder()
-                    .id(articleId)
-                    .title(articleById.getTitle())
-                    .content(articleById.getContent())
-                    .tags(articleById.getTags())
-                    .approves(articleById.getApprove())
-                    .comments(articleById.getComments().size())
-                    .createTime(articleById.getCreateTime())
-                    .updateTime(articleById.getUpdateTime())
-                    .canComment(articleById.isCanComment())
-                    .canCopy(articleById.isCanCopy())
-                    .views(articleById.getViews())
-                    .build();
-            return Result.Builder(Result.SUCCESS, article);
-        } else {
-            throw new NoFoundException(Result.Builder(Result.SUCCESS, "文章不存在或已被隐藏", null));
-        }
-    }
+
 
     @ApiOperation(value = "返回指定文章ID的文章内容", httpMethod = "GET")
-    @GetMapping("/info/{articleId}")
+    @GetMapping("/info/{articleId:\\d+}")
     public Result info(@PathVariable long articleId, HttpServletRequest request) throws Exception {
         if (articleService.existsArticleByIdAndUsername(articleId, userService.getUserNameByRequest(request))) {
             Article articleById = articleService.getArticleById(articleId);
             ArticleDto article = ArticleDto.builder()
                     .id(articleId)
                     .title(articleById.getTitle())
+                    .autoSummary(articleById.isAutoSummary())
                     .summary(articleById.getSummary())
                     .content(articleById.getContent())
                     .tags(articleById.getTags())
                     .approves(articleById.getApprove())
                     .comments(articleById.getComments().size())
-                    .createTime(articleById.getCreateTime())
+                    .isTaskPublish(articleById.isTaskPublish())
+                    .publishTime(articleById.getPublishTime())
                     .updateTime(articleById.getUpdateTime())
                     .canComment(articleById.isCanComment())
                     .canCopy(articleById.isCanCopy())
@@ -98,6 +75,7 @@ public class ArticleController {
     @PostMapping("/new")
     public Result writeArticle(@RequestBody ArticleParam articleParam, HttpServletRequest request) {
         try {
+            log.info(articleParam.toString());
             User user = userService.getUserByRequest(request);
             if (ArticleParam.checkIsRight(articleParam) &&
                     subsectionService.existsSubsectionByIdAndUsername(articleParam.getSubsectionId(), user.getUsername())) {
@@ -111,9 +89,25 @@ public class ArticleController {
                         .canCopy(articleParam.isCanCopy())
                         .canView(articleParam.isCanView())
                         .tags(articleParam.getTags())
+                        .state(articleParam.getState())
                         .build();
-                articleService.save(article);
-                return Result.SUCCESS;
+                if(articleParam.isTaskPublish()){
+                    articleParam.setPublishTime(articleParam.getPublishTime());
+                }else {
+                    articleParam.setPublishTime(new Date());
+                }
+                article = articleService.save(article);
+                ArticleDto articleDto = ArticleDto.builder()
+                        .title(article.getTitle())
+                        .summary(article.getSummary())
+                        .content(article.getContent())
+                        .canComment(article.isCanComment())
+                        .canCopy(article.isCanCopy())
+                        .canView(article.isCanView())
+                        .id(article.getId())
+                        .tags(article.getTags())
+                        .build();
+                return Result.Builder(Result.SUCCESS,articleDto);
             } else {
                 return Result.FAIL;
             }
@@ -131,12 +125,18 @@ public class ArticleController {
                             userService.getUserByRequest(request).getUsername())) {
                 Article article = articleService.getArticleById(articleParam.getId());
                 article.setTitle(articleParam.getTitle());
+                article.setAutoSummary(articleParam.isAutoSummary());
                 article.setSummary(articleParam.getSummary());
                 article.setContent(articleParam.getContent());
                 article.setCanComment(articleParam.isCanComment());
                 article.setCanCopy(articleParam.isCanCopy());
-                article.setCanView(articleParam.isCanCopy());
+                article.setCanView(articleParam.isCanView());
                 article.setTags(articleParam.getTags());
+                article.setTaskPublish(articleParam.isTaskPublish());
+                if(articleParam.isTaskPublish()){
+                    article.setPublishTime(articleParam.getPublishTime());
+                }
+                article.setState(articleParam.getState());
                 articleService.save(article);
                 return Result.SUCCESS;
             } else {
@@ -158,16 +158,16 @@ public class ArticleController {
     }
 
     @ApiOperation(value = "最近更新", httpMethod = "GET")
-    @GetMapping("/recent/{username}/size/{size:(\\d+)}")
+    @GetMapping("/recent/{username}/size/{size:\\d+}")
     public Result recent(@PathVariable String username, @PathVariable int size) {
-        Set<ArticleDto> articles = new HashSet<>();
+        List<ArticleDto> articles = new ArrayList<>();
         articleService.getArticlesByUser(userService.getUserByUname(username), 0, size).forEach(article -> {
             if (article.isCanView()) {
                 articles.add(ArticleDto.builder()
                         .id(article.getId())
                         .title(article.getTitle())
                         .summary(article.getContent().substring(0, 200))
-                        .createTime(article.getCreateTime())
+                        .publishTime(article.getPublishTime())
                         .approves(article.getApprove())
                         .comments(article.getComments().size())
                         .views(article.getViews())
@@ -176,6 +176,23 @@ public class ArticleController {
             }
         });
 
-        return Result.Builder(Result.SUCCESS,articles);
+        return Result.Builder(Result.SUCCESS, articles);
+    }
+
+    @ApiOperation(value = "分卷文章列表", httpMethod = "GET")
+    @GetMapping("/list/{subsectionId:\\d+}")
+    public Result list(@PathVariable long subsectionId, HttpServletRequest request) throws Exception {
+        if (subsectionService.existsSubsectionByIdAndUsername(subsectionId, userService.getUserNameByRequest(request))) {
+            List<ArticleDto> articleDtos = new ArrayList<>();
+            subsectionService.getSubsectionById(subsectionId).getArticles().forEach(article -> {
+                articleDtos.add(ArticleDto.builder()
+                        .id(article.getId())
+                        .title(article.getTitle())
+                        .build()
+                );
+            });
+            return Result.Builder(Result.SUCCESS, articleDtos);
+        }
+        return Result.FAIL;
     }
 }

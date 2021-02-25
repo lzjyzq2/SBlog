@@ -16,7 +16,7 @@ import java.util.Set;
 @Builder
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"roles", "books", "histories",
+@EqualsAndHashCode(exclude = {"roles", "books","articles", "histories",
         "articleCollections","bookCollections","follows","links","articleApproves","commentApproves"})
 @Entity
 @Table(name = "user_info")
@@ -54,12 +54,14 @@ public class User {
     @LastModifiedDate
     private Date updated;   // 修改时间
 
-    @JoinColumn(nullable = false)
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
+    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "users",cascade = CascadeType.REMOVE)
     private Set<Role> roles;    //用户所有角色值，用于shiro做角色权限的判断
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private Set<Book> books;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private Set<Article> articles;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private Set<History> histories;
