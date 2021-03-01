@@ -15,6 +15,7 @@ import cn.settile.sblog.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,7 @@ public class BookController {
     @Autowired
     UserService userService;
 
+    @RequiresAuthentication
     @ApiOperation(value = "返回登录用户的文集", httpMethod = "GET")
     @GetMapping("/list")
     public Result list(HttpServletRequest request) throws Exception {
@@ -47,10 +49,10 @@ public class BookController {
         bookService.findBooksByUsername(userService.getUserNameByRequest(request)).forEach(book -> {
             bookDtos.add(BookDto.builder().id(book.getId()).userId(book.getUser().getUid()).name(book.getName()).info(book.getInfo()).build());
         });
-        log.info(""+bookDtos);
         return Result.Builder(Result.SUCCESS,bookDtos);
     }
 
+    @RequiresAuthentication
     @ApiOperation(value = "返回指定ID文集的信息", httpMethod = "GET")
     @GetMapping("/info/{bookId:(\\d+)}")
     public Result info(long bookId){
@@ -80,6 +82,7 @@ public class BookController {
         return Result.Builder(Result.SUCCESS,book);
     }
 
+    @RequiresAuthentication
     @ApiOperation(value = "删除指定文集", httpMethod = "DELETE")
     @DeleteMapping("/delete/{bookId}")
     public Result deleteBook(@PathVariable long bookId,HttpServletRequest request) throws Exception {
@@ -89,6 +92,7 @@ public class BookController {
         return Result.FAIL;
     }
 
+    @RequiresAuthentication
     @ApiOperation(value = "创建文集", httpMethod = "POST")
     @PostMapping("/new")
     public Result createBook(@RequestBody BookParam bookParam,HttpServletRequest request) throws Exception {
@@ -110,6 +114,7 @@ public class BookController {
         return Result.FAIL;
     }
 
+    @RequiresAuthentication
     @ApiOperation(value = "更新文集信息", httpMethod = "POST")
     @PostMapping("/update")
     public Result updateBook(@RequestBody BookParam bookParam,HttpServletRequest request) throws Exception {

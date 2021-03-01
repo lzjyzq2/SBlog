@@ -12,6 +12,8 @@ import cn.settile.sblog.service.CommentService;
 import cn.settile.sblog.service.UserService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
+import org.apache.shiro.authz.annotation.RequiresGuest;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +36,7 @@ public class CommentController {
     private ArticleService articleService;
     private UserService userService;
     private CommentApproveService commentApproveService;
+
     public CommentController(CommentService commentService, ArticleService articleService, UserService userService, CommentApproveService commentApproveService){
         this.commentService = commentService;
         this.articleService = articleService;
@@ -41,6 +44,7 @@ public class CommentController {
         this.commentApproveService = commentApproveService;
     }
 
+    @RequiresAuthentication
     @PostMapping
     public Result comment(@RequestBody CommentParam commentParam, HttpServletRequest request) throws Exception {
         if(articleService.existsArticlesById(commentParam.getArticleId())||(commentParam.getContent()!=null&&!"".equals(commentParam.getContent().trim()))){
@@ -66,6 +70,15 @@ public class CommentController {
         return Result.FAIL;
     }
 
+    /**
+     * 获取指定文章指定页的评论
+     * @param aid
+     * @param page
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequiresGuest
     @GetMapping("/artcile/{aid:\\d+}/page/{page}")
     public Result articleComments(@PathVariable long aid,@PathVariable int page,HttpServletRequest request) throws Exception {
         Page<Comment> commentPage = commentService.getCommentsByArticleId(aid,page);
@@ -124,11 +137,27 @@ public class CommentController {
                 .build();
         return Result.Builder(Result.SUCCESS,commentDto);
     }
+
+    /**
+     * 获取指定文章指定页的评论 树状
+     * @param aid
+     * @param page
+     * @return
+     */
+    @RequiresGuest
     @GetMapping("/artcile/{aid:\\d+}/tpage/{page:\\d+}")
     public Result articleTreeComments(@PathVariable long aid,@PathVariable int page){
         return Result.FAIL;
     }
 
+    /**
+     *
+     * @param parentCommentId
+     * @param page
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/{parentCommentId:\\d+}/replys/{page:\\d+}")
     public Result findReplys(@PathVariable int parentCommentId, @PathVariable int page,HttpServletRequest request) throws Exception {
         Page<Comment> commentPage = commentService.getCommentsByParentCommentId(parentCommentId,page);

@@ -11,6 +11,7 @@ import cn.settile.sblog.service.SubsectionService;
 import cn.settile.sblog.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,6 +37,7 @@ public class SubsectionController {
     @Autowired
     BookService bookService;
 
+    @RequiresAuthentication
     @ApiOperation(value = "更新分卷信息", httpMethod = "POST")
     @PostMapping("/update")
     public Result update(@RequestBody SubsectionParam subsectionParam, HttpServletRequest request) throws Exception {
@@ -47,7 +49,7 @@ public class SubsectionController {
         return Result.FAIL;
     }
 
-
+    @RequiresAuthentication
     @ApiOperation(value = "删除分卷", httpMethod = "DELETE")
     @DeleteMapping("/delete/{subsectionId:(\\d+)}")
     public Result delete(@PathVariable long subsectionId, HttpServletRequest request) throws Exception{
@@ -58,6 +60,7 @@ public class SubsectionController {
         return Result.FAIL;
     }
 
+    @RequiresAuthentication
     @ApiOperation(value = "返回指定ID的分卷", httpMethod = "POST")
     @PostMapping("/info/{subsectionId:(\\d+)}")
     public Result info(@PathVariable long subsectionId, HttpServletRequest request) throws Exception {
@@ -79,6 +82,7 @@ public class SubsectionController {
         return Result.FAIL;
     }
 
+    @RequiresAuthentication
     @ApiOperation(value = "新建分卷", httpMethod = "POST")
     @PostMapping("/new")
     public Result create(@RequestBody SubsectionParam subsectionParam, HttpServletRequest request) throws Exception {
@@ -98,6 +102,7 @@ public class SubsectionController {
         return Result.FAIL;
     }
 
+    @RequiresAuthentication
     @ApiOperation(value = "获取指定文集的分卷列表", httpMethod = "GET")
     @GetMapping("/list/{bookId:\\d+}")
     public Result list(@PathVariable long bookId,HttpServletRequest request) throws Exception {

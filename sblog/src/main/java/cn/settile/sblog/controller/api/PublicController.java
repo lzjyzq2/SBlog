@@ -47,6 +47,7 @@ public class PublicController {
     }
 
 
+    @RequiresGuest
     @GetMapping("/{username}")
     @ApiOperation(value = "返回指定用户的主页内容", httpMethod = "GET")
     public Result index(@PathVariable String username) {
@@ -60,8 +61,7 @@ public class PublicController {
                     .username(user.getUsername())
                     .neckname(user.getNick())
                     .follow(user.getFollows().size())
-                    //TODO Article
-                    .articles(0)
+                    .articles(articleDtos.size())
                     .anthology(user.getBooks().size())
                     .books(bookDtos)
                     .recentlyArticles(articleDtos)
@@ -71,6 +71,12 @@ public class PublicController {
         return Result.FAIL;
     }
 
+    /**
+     *
+     * @param username
+     * @return
+     */
+    @RequiresGuest
     @ApiOperation(value = "返回指定用户的最近更新文章", httpMethod = "GET")
     @GetMapping("/{username}/recently/articles")
     public Result recentlyArticle(@PathVariable String username) {
@@ -81,6 +87,7 @@ public class PublicController {
         return Result.FAIL;
     }
 
+    @RequiresGuest
     @ApiOperation(value = "返回用户的文集", httpMethod = "GET")
     @GetMapping("/{username}/recently/books")
     public Result recentlyBooks(@PathVariable String username) {
@@ -91,6 +98,7 @@ public class PublicController {
         return Result.FAIL;
     }
 
+    @RequiresGuest
     @ApiOperation(value = "返回用户的Tags", httpMethod = "GET")
     @GetMapping("/{username}/tags")
     public Result tags(@PathVariable String username) {
@@ -111,6 +119,7 @@ public class PublicController {
         return Result.FAIL;
     }
 
+    @RequiresGuest
     @ApiOperation(value = "返回用户的公开信息", httpMethod = "GET")
     @GetMapping("/{username}/public-info")
     public Result publicInfo(@PathVariable String username) {
@@ -128,6 +137,22 @@ public class PublicController {
         return Result.FAIL;
     }
 
+    @RequiresGuest
+    @ApiOperation(value = "返回用户的公开信息", httpMethod = "GET")
+    @GetMapping("check/{username}/")
+    public Result hasUser(@PathVariable String username){
+        if(userService.existsUserByUname(username)) {
+            return Result.SUCCESS;
+        }
+        return Result.FAIL;
+    }
+
+
+    /**
+     *
+     * @param username
+     * @return
+     */
     private List<BookDto> getRecentlyBooks(String username) {
         List<BookDto> bookDtos = new ArrayList<>();
         userService.getUserByUname(username).getBooks().forEach(book -> {
@@ -144,6 +169,11 @@ public class PublicController {
         return bookDtos;
     }
 
+    /**
+     *
+     * @param username
+     * @return
+     */
     public List<ArticleDto> getRecentlyArticles(String username) {
         List<ArticleDto> articleDtos = new ArrayList<>();
         articleService.findRectlyArticles(username, 30).forEach(

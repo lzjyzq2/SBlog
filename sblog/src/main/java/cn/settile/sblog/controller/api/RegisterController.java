@@ -13,6 +13,7 @@ import cn.settile.sblog.service.UserService;
 import cn.settile.sblog.utils.*;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresGuest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -103,6 +104,7 @@ public class RegisterController {
      * @param registerParam 待注册User
      * @return 注册结果
      */
+    @RequiresGuest
     @ApiOperation(value = "注册接口", notes = "用户输入用户信息进行注册，返回注册结果", httpMethod = "PUT", response = String.class)
     @PutMapping
     public Result register(@RequestBody RegisterParam registerParam) throws ServiceException{
@@ -144,6 +146,7 @@ public class RegisterController {
      * @param email 用户邮箱
      * @return 邮件发送结果
      */
+    @RequiresGuest
     @GetMapping("/captcha")
     @AccessLimit(time = 60,count = 1)
     @ApiOperation(value = "注册验证码接口", notes = "用户输入邮箱后，通过邮箱发送验证码", httpMethod = "GET", response = Result.class)

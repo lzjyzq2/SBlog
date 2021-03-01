@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author lzjyz
  */
@@ -63,10 +66,14 @@ public class ViewController {
             throw new NoFoundException(Result.Builder(Result.NOT_FOUND, "文章不存在或已被隐藏", null));
         }
     }
+
     @ApiOperation(value = "查询指定文章是否存在", httpMethod = "GET")
     @GetMapping("/exits/{articleId}")
     @RequiresGuest
     public Result hasArticle(@PathVariable long articleId){
-        return Result.FAIL;
+        Map<String,Boolean> result = new HashMap<>();
+        boolean hasArticle = articleService.existsArticlesById(articleId)&&articleService.getArticleById(articleId).isCanView();
+        result.put("hasArticle",hasArticle);
+        return Result.Builder(Result.SUCCESS,result);
     }
 }

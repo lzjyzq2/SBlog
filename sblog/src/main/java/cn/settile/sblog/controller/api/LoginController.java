@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -49,11 +50,6 @@ public class LoginController {
                 result = Result.LOGIN_SUCCESS;
                 LoginInfo loginInfo = getUserLoginInfo(loginUser);
                 result.setData(loginInfo);
-                Cookie cookie = new Cookie("token",loginInfo.getToken());
-                cookie.setDomain(request.getServerName());
-                cookie.setPath("/");
-                cookie.setMaxAge(604800);
-                response.addCookie(cookie);
             }
         }
         return result;
@@ -74,8 +70,8 @@ public class LoginController {
         info.setUid(user.getUid());
         info.setUname(user.getUsername());
         info.setNick(user.getNick());
-        info.setCreated(user.getCreated());
-        info.setUpdated(user.getUpdated());
+        info.setCreated(System.currentTimeMillis());
+        info.setExpiration(info.getCreated()+JwtUtil.EXPIRE_TIME);
         String token = JwtUtil.sign(user.getUsername(), user.getPassword());
         redisUtil.set(CommonConstant.PREFIX_USER_TOKEN + token, token);
         redisUtil.expire(CommonConstant.PREFIX_USER_TOKEN + token, JwtUtil.EXPIRE_TIME);
