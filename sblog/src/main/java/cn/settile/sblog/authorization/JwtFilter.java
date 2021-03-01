@@ -29,12 +29,15 @@ public class JwtFilter extends BasicHttpAuthenticationFilter {
      */
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        try {
-            return executeLogin(request, response);
-        } catch (Exception e) {
-            log.error(((HttpServletRequest)request).getRequestURI()+"验证失败");
-            throw new UnAuthenticationException(Result.AUTHENTICATION_FAIL);
+        if(isLoginAttempt(request,response)) {
+            try {
+                return executeLogin(request, response);
+            } catch (Exception e) {
+                log.error(((HttpServletRequest)request).getRequestURI()+"验证失败");
+                throw new UnAuthenticationException(Result.AUTHENTICATION_FAIL);
+            }
         }
+        return true;
     }
 
 

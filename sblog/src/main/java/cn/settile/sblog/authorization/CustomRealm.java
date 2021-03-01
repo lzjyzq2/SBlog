@@ -1,5 +1,7 @@
 package cn.settile.sblog.authorization;
 
+import cn.settile.sblog.model.entity.Permission;
+import cn.settile.sblog.model.entity.Role;
 import cn.settile.sblog.model.entity.User;
 import cn.settile.sblog.service.UserService;
 import cn.settile.sblog.utils.*;
@@ -15,6 +17,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
@@ -22,7 +25,8 @@ import java.util.Set;
  * @author : lzjyz
  * @date : 2020-01-22 15:02
  */
-@Component @Slf4j
+@Service
+@Slf4j
 public class CustomRealm extends AuthorizingRealm {
 
 
@@ -49,11 +53,15 @@ public class CustomRealm extends AuthorizingRealm {
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
         // 设置用户拥有的角色集合，比如“admin,test”
-        Set<String> roles = userService.getRoleNameSet(user);
-        info.setRoles(roles);
         // 设置用户拥有的权限集合，比如“sys:role:add,sys:user:add”
-        Set<String> permissionSet = userService.getPermissionNameSet(user);
-        info.addStringPermissions(permissionSet);
+        Set<Role> roles = userService.getRoleSet(user);
+        roles.forEach(role -> {
+            info.addRole(role.getRoleName());
+            Set<Permission> permissions = role.getPermissions();
+            permissions.forEach(permission -> {
+                info.addStringPermission(permission.getPermissionsName());
+            });
+        });
         return info;
     }
 

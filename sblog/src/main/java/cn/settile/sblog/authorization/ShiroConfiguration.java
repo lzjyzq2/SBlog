@@ -13,6 +13,7 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 import javax.servlet.Filter;
 import java.util.HashMap;
@@ -24,14 +25,9 @@ import java.util.Map;
  * @date : 2020-01-22 15:02
  */
 @Configuration
-public class ShiroConfig {
-
-    @Bean("realm")
-    public Realm getRealm(){
-        return new CustomRealm();
-    }
-
+public class ShiroConfiguration {
     @Bean
+    @DependsOn({"lifecycleBeanPostProcessor"})
     public static DefaultAdvisorAutoProxyCreator getDefaultAdvisorAutoProxyCreator() {
         DefaultAdvisorAutoProxyCreator creator = new DefaultAdvisorAutoProxyCreator();
         /**
@@ -40,7 +36,6 @@ public class ShiroConfig {
          * 加入这项配置能解决这个bug
          */
         creator.setProxyTargetClass(true);
-        creator.setUsePrefix(true);
         return creator;
     }
 
@@ -83,9 +78,9 @@ public class ShiroConfig {
     }
 
     @Bean("securityManager")
-    public DefaultWebSecurityManager securityManager() {
+    public DefaultWebSecurityManager securityManager(CustomRealm realm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setRealm(getRealm());
+        securityManager.setRealm(realm);
         /*
          * 关闭shiro自带的session，详情见文档
          * http://shiro.apache.org/session-management.html#SessionManagement-
@@ -111,4 +106,5 @@ public class ShiroConfig {
         advisor.setSecurityManager(securityManager);
         return advisor;
     }
+
 }

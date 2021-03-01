@@ -1,5 +1,7 @@
 package cn.settile.sblog.utils;
 
+import cn.settile.sblog.exception.UnAuthenticationException;
+import cn.settile.sblog.exception.result.Result;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -76,8 +78,8 @@ public class JwtUtil {
     public static String getUserNameByToken(HttpServletRequest request) throws Exception {
         String accessToken = request.getHeader(CommonConstant.ACCESS_TOKEN);
         String username = getUsername(accessToken);
-        if (username.isEmpty()) {
-            throw new Exception("未获取到用户");
+        if (null==username&&username.isEmpty()) {
+            throw new UnAuthenticationException(Result.AUTHENTICATION_FAIL);
         }
         return username;
     }
